@@ -1,0 +1,49 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  devtools:
+    add-properties: true
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:5173"
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+      routes: # điều hướng request đến service tương ứng thông qua chỉ định trên url
+        - id: authentication-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/auth/**, /v3/api-docs/authentication-service
+          filters:
+            - RewritePath=/auth/(?<segment>.*), /$\{segment} # thay thế ký tự /auth/ thành /
+            - CustomizeFilter
+        - id: account-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/account/**, /v3/api-docs/account-service
+          filters:
+            - RewritePath=/account/(?<segment>.*), /$\{segment} # thay thế ký tự /account/ thành /
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
+    urls:
+      - url: /v3/api-docs
+        name: API Gateway
+      - url: /v3/api-docs/authentication-service
+        name: Authentication Service
+      - url: /v3/api-docs/account-service
+        name: Account Service

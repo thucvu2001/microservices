@@ -1,0 +1,164 @@
+services:
+
+  postgres:
+    image: postgres
+    container_name: postgresql
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+      - ./initdb.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - '5431:5432'
+    networks:
+      - default
+
+  mongo:
+    image: mongo:6-jammy
+    container_name: mongodb
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo:/data/mongo
+    networks:
+      - default
+
+  redis:
+    image: redis:6.2-alpine
+    container_name: redis
+    hostname: redis
+    ports:
+      - '6379:6379'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB;FLUSHALL
+    networks:
+      - default
+
+  zookeeper:
+    container_name: zookeeper
+    image: docker.io/bitnami/zookeeper:3
+    platform: linux/amd64
+    ports:
+      - "2181:2181"
+    volumes:
+      - zookeeper_data:/bitnami
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - default
+
+  kafka:
+    container_name: kafka
+    image: docker.io/bitnami/kafka:2-debian-10
+    platform: linux/amd64
+    ports:
+      - "9092:9092"
+    expose:
+      - "9093"
+    volumes:
+      - kafka_data:/bitnami
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_ADVERTISED_LISTENERS=INSIDE://kafka:9093,OUTSIDE://localhost:9092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      - KAFKA_LISTENERS=INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
+      - KAFKA_INTER_BROKER_LISTENER_NAME=INSIDE
+    depends_on:
+      - zookeeper
+    networks:
+      - default
+
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui
+    ports:
+      - "9090:8080"
+    restart: always
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9093
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+    networks:
+      - default
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - '9090:9090'
+    networks:
+      - default
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: unless-stopped
+    environment: # account: grafana/password
+      - GF_SECURITY_ADMIN_USER=grafana
+      - GF_SECURITY_ADMIN_PASSWORD=password
+    ports:
+      - '3000:3000'
+    links:
+      - prometheus
+    volumes:
+      - grafana:/var/lib/grafana
+    networks:
+      - default
+
+#  api-gateway:
+#    container_name: api-gateway
+#    build:
+#      context: ./api-gateway
+#      dockerfile: Dockerfile
+#    ports:
+#      - "4953:4953"
+#    env_file:
+#      - host.local.env
+#    networks:
+#      - default
+
+#  authentication:
+#    container_name: auth-service
+#    build:
+#      context: ./authentication
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8080:8080"
+#    env_file:
+#      - host.local.env
+#    networks:
+#      - default
+
+#  account:
+#    container_name: auth-service
+#    build:
+#      context: ./
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8080:8080"
+#    env_file:
+#      - host.local.env
+#    networks:
+#      - default
+
+
+networks:
+  default:
+    name: micro-kube-network
+
+volumes:
+  postgres:
+  mongo:
+  grafana:
+  kafka_data:
+  zookeeper_data:
