@@ -30,6 +30,10 @@
 - Circuit Breaker
 - Saga Pattern
 
+## Create Postgres Database
+```bash
+docker compose up -d postgres
+```
 
 ## Build application
 ```bash
