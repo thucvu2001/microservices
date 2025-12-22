@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @Operation(summary = "Get user detail", description = "API retrieve user detail by ID from database")
-    @GetMapping("/{userId}")
+    @GetMapping("/user/id/{userId}")
     public ApiResponse getUserDetail(@PathVariable @Min(value = 1, message = "userId must be equals or greater than 1") Long userId) {
         log.info("Get user detail by ID: {}", userId);
 

@@ -1,12 +1,16 @@
 package vn.thucvu.service.impl;
 
 
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +29,7 @@ import vn.thucvu.repository.AddressRepository;
 import vn.thucvu.repository.UserRepository;
 import vn.thucvu.service.UserService;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,6 +40,10 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
     private final PasswordEncoder passwordEncoder;
+    private final KafkaTemplate<String, String> kafkaTemplate;
+
+    @Value("${spring.kafka.confirmAccountTopic}")
+    private String confirmAccountTopic;
 
 
     @Override
@@ -161,10 +168,19 @@ public class UserServiceImpl implements UserService {
                 addressEntity.setUserId(userId);
             });
             addressRepository.saveAll(addresses);
+            log.info("Save addresses: {}", addresses);
+
+
         }
 
         // Send email
-
+        Map<String, Object> message = new LinkedHashMap<>();
+        message.put("id", userId);
+        message.put("email", req.getEmail());
+        message.put("secretCode", RandomStringUtils.randomAlphabetic(6));
+        String jsonMessage = new Gson().toJson(message);
+        kafkaTemplate.send(confirmAccountTopic, jsonMessage);
+        log.info("Send confirm account message: {}", jsonMessage);
         return userId;
     }
 
