@@ -1,0 +1,33 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  devtools:
+    add-properties: true
+  datasource:
+    url: jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5431}/postgres
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:password}
+    hikari:
+      pool-name: HikariConnPool
+      maximum-pool-size: 30         # default: 10
+      minimum-idle: 10              # default: same as max pool size
+      connection-timeout: 30000     # default: 30s
+      idle-timeout: 600000          # default: 10 minutes
+      max-lifetime: 1800000         # default: 30 minutes
+    jpa:
+      show-sql: false
+      hibernate:
+        ddl-auto: none
+  kafka:
+    bootstrap-servers: localhost:29092
+    confirmAccountTopic: confirm-account-topic
+  sendgrid:
+    api-key: ${SENDGRID_KEY}
+
+openapi:
+  service:
+    api-docs: mail-service
+    server: http://localhost:${server.port}
+    title:  Mail service
+    version: 1.0.0
