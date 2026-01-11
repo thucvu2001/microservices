@@ -22,8 +22,6 @@ spring:
   kafka:
     bootstrap-servers: localhost:29092
     confirmAccountTopic: confirm-account-topic
-  sendgrid:
-    api-key: ${SENDGRID_KEY}
 
 openapi:
   service:

@@ -1,4 +1,4 @@
-package vn.thucvu.configs;
+package vn.thucvu.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

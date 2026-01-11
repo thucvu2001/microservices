@@ -1,4 +1,4 @@
-package vn.thucvu.configs;
+package vn.thucvu.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
