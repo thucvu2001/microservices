@@ -19,8 +19,8 @@ public class KafkaProducerConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    @Value("${spring.kafka.confirmAccountTopic}")
-    private String confirmAccountTopic;
+    @Value("${spring.kafka.topic}")
+    private String topic;
 
     @Value("${spring.profiles.active::unknown}") // lay gia tri tu file pom.xml
     private String activeProfile;
@@ -29,7 +29,7 @@ public class KafkaProducerConfig {
     public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class); // producer ma hoa
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         if ("prod".equals(activeProfile)) {
             props.put("security.protocol", "SSL");
@@ -47,6 +47,6 @@ public class KafkaProducerConfig {
 
     @Bean
     public NewTopic accountTopic() {
-        return new NewTopic(confirmAccountTopic, 3, (short) 1);
+        return new NewTopic(topic, 3, (short) 1);
     }
 }

@@ -42,8 +42,8 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    @Value("${spring.kafka.confirmAccountTopic}")
-    private String confirmAccountTopic;
+    @Value("${spring.kafka.topic}")
+    private String topic;
 
 
     @Override
@@ -177,9 +177,10 @@ public class UserServiceImpl implements UserService {
         Map<String, Object> message = new LinkedHashMap<>();
         message.put("id", userId);
         message.put("email", req.getEmail());
+        message.put("username", req.getUsername());
         message.put("secretCode", RandomStringUtils.randomAlphabetic(6));
         String jsonMessage = new Gson().toJson(message);
-        kafkaTemplate.send(confirmAccountTopic, jsonMessage);
+        kafkaTemplate.send(topic, jsonMessage);
         log.info("Send confirm account message: {}", jsonMessage);
         return userId;
     }
