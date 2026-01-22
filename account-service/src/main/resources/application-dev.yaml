@@ -13,7 +13,7 @@ spring:
       hibernate:
         ddl-auto: none
   kafka:
-    bootstrap-servers: localhost:29092
+    bootstrap-servers: ${KAFKA_SERVER:localhost:29092}
     topic: send-email-register-topic
 
 openapi:

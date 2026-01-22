@@ -40,6 +40,13 @@ spring:
           filters:
             - RewritePath=/mail/(?<segment>.*), /$\{segment} # thay thế ký tự /mail/ thành /
             - CustomizeFilter
+        - id: product-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/product/**, /v3/api-docs/product-service
+          filters:
+            - RewritePath=/product/(?<segment>.*), /$\{segment} # thay thế ký tự /product/ thành /
+            - CustomizeFilter
 
 springdoc:
   api-docs:
@@ -55,3 +62,10 @@ springdoc:
         name: Authentication Service
       - url: /v3/api-docs/account-service
         name: Account Service
+
+openapi:
+  service:
+    api-docs: api-gateway
+    server: http://localhost:${server.port}
+    title: Api Gateway
+    version: 1.0.0

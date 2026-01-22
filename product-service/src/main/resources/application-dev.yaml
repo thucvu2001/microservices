@@ -12,16 +12,10 @@ spring:
       show-sql: false
       hibernate:
         ddl-auto: none
-  kafka:
-    bootstrap-servers: ${KAFKA_SERVER:localhost:29092}
-    topic: send-email-register-topic
-  sendgrid:
-    api-key: ${SENDGRID_KEY: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}
-
 
 openapi:
   service:
-    api-docs: mail-service
+    api-docs: product-service
     server: http://localhost:${server.port}
-    title:  Mail service
+    title: Product service
     version: 1.0.0

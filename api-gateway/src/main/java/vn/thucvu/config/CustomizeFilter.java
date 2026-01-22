@@ -1,4 +1,4 @@
-package vn.thucvu;
+package vn.thucvu.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;

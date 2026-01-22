@@ -73,12 +73,34 @@ services:
     container_name: kafka-ui
     image: provectuslabs/kafka-ui
     ports:
-      - "9090:8080"
+      - "9091:8080"
     restart: always
     environment:
       - KAFKA_CLUSTERS_0_NAME=local
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
       - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+    networks:
+      - default
+
+  elastic-search:
+    image: elasticsearch:7.14.1
+    container_name: elasticsearch
+    restart: always
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+    networks:
+      - default
+
+  kibana:
+    image: kibana:7.14.1
+    container_name: kibana
+    restart: always
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     networks:
       - default
 

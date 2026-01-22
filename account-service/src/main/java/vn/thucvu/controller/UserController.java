@@ -107,7 +107,7 @@ public class UserController {
             log.error("Verification fail, message={}", e.getMessage(), e);
         } finally {
             // direct to login page
-            response.sendRedirect("https://tayjava.vn/wp-admin/");
+            response.sendRedirect("");
         }
     }
 

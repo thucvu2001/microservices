@@ -2,7 +2,9 @@
   <dictionary name="project">
     <words>
       <w>kafka</w>
+      <w>kibana</w>
       <w>openapi</w>
+      <w>prometheus</w>
       <w>thucvu</w>
     </words>
   </dictionary>

@@ -77,6 +77,28 @@ CREATE TABLE public.tbl_user
     CONSTRAINT tbl_user_pkey PRIMARY KEY (id)
 );
 
+-- public.tbl_product definition
+
+-- Drop table
+
+-- DROP TABLE public.tbl_product
+
+CREATE TABLE public.tbl_product
+(
+    id          bigserial      NOT NULL,
+    name        varchar(255)   NOT NULL,
+    description varchar(255),
+    price       float8         NOT NULL,
+    user_id     int8           NOT NULL,
+    created_at  timestamp(6)   DEFAULT now(),
+    updated_at  timestamp(6)   DEFAULT now(),
+
+    CONSTRAINT tbl_product_pkey PRIMARY KEY (id),
+    CONSTRAINT fk_product_to_user FOREIGN KEY (user_id)
+        REFERENCES public.tbl_user (id)
+);
+
+
 
 -- public.tbl_address definition
 
@@ -166,7 +188,7 @@ CREATE TABLE public.tbl_role_has_permission
 
 -- DROP TABLE public.tbl_user_has_role;
 
-CREATE TABLE public.tbl_user_has_role
+CREATE TABLE IF NOT EXISTS public.tbl_user_has_role
 (
     id         serial4   NOT NULL,
     user_id    bigserial NOT NULL,
