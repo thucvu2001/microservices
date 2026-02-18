@@ -38,6 +38,17 @@ services:
     networks:
       - default
 
+  redis-insight:
+    image: redislabs/redisinsight:latest
+    container_name: redis-insight
+    restart: unless-stopped
+    ports:
+      - '5540:5540'
+    depends_on:
+      - redis
+    networks:
+      - default
+
   zookeeper:
     container_name: zookeeper
     image: confluentinc/cp-zookeeper:latest
