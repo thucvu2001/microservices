@@ -21,7 +21,7 @@ import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestControllerAdvice
-public class GlobalExceptionHandling {
+public class GlobalExceptionHandler {
     /**
      * Handle exception when validate data
      *
@@ -82,7 +82,7 @@ public class GlobalExceptionHandling {
      * @param request
      * @return
      */
-    @ExceptionHandler({ForBiddenException.class, AccessDeniedException.class})
+    @ExceptionHandler({ForbiddenException.class, AccessDeniedException.class})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "403", description = "Forbidden",
                     content = {@Content(mediaType = APPLICATION_JSON_VALUE,

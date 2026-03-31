@@ -9,9 +9,9 @@ import reactor.core.publisher.Mono;
 
 @Component
 @Slf4j
-public class CustomizeFilter extends AbstractGatewayFilterFactory<CustomizeFilter.Config> {
+public class RequestLoggingFilter extends AbstractGatewayFilterFactory<RequestLoggingFilter.Config> {
 
-    public CustomizeFilter() {
+    public RequestLoggingFilter() {
         super(Config.class);
     }
 

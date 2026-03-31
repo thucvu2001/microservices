@@ -50,7 +50,7 @@ public class ProductController {
                 .build();
     }
 
-    @PutMapping("/upd")
+    @PutMapping("/update")
     public ApiResponse updateProduct(@RequestBody ProductUpdateRequest request) {
         log.info("Update product");
 
@@ -62,7 +62,7 @@ public class ProductController {
                 .build();
     }
 
-    @DeleteMapping("/del/{productId}")
+    @DeleteMapping("/{productId}")
     public ApiResponse deleteProduct(@PathVariable long productId) {
         log.info("Remove product: {}", productId);
 

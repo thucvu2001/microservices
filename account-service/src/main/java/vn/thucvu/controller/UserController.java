@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @Operation(summary = "Get user detail", description = "API retrieve user detail by ID from database")
-    @GetMapping("/user/id/{userId}")
+    @GetMapping("/id/{userId}")
     public ApiResponse getUserDetail(@PathVariable @Min(value = 1, message = "userId must be equals or greater than 1") Long userId) {
         log.info("Get user detail by ID: {}", userId);
 
@@ -59,7 +59,7 @@ public class UserController {
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse createUser(@RequestBody @Valid UserCreationRequest request) {
-        log.info("Create User: {}", request);
+        log.info("Create User: {}", request.getEmail());
 
         return ApiResponse.builder()
                 .status(HttpStatus.CREATED.value())
@@ -69,7 +69,7 @@ public class UserController {
     }
 
     @Operation(summary = "Update User", description = "API update user to database")
-    @PutMapping("/upd")
+    @PutMapping("/update")
     public ApiResponse updateUser(@RequestBody @Valid UserUpdateRequest request) {
         log.info("Updating user: {}", request);
 
@@ -83,9 +83,9 @@ public class UserController {
     }
 
     @Operation(summary = "Change Password", description = "API change password for user to database")
-    @PatchMapping("/change-pwd")
+    @PatchMapping("/change-password")
     public ApiResponse changePassword(@RequestBody @Valid UserPasswordRequest request) {
-        log.info("Changing password for user: {}", request);
+        log.info("Changing password for user: {}", request.getId());
 
         userService.changePassword(request);
 
@@ -112,7 +112,7 @@ public class UserController {
     }
 
     @Operation(summary = "Delete user", description = "API activate user from database")
-    @DeleteMapping("/del/{userId}")
+    @DeleteMapping("/{userId}")
     public ApiResponse deleteUser(@PathVariable @Min(value = 1, message = "userId must be equals or greater than 1") Long userId) {
         log.info("Deleting user: {}", userId);
 

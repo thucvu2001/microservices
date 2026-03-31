@@ -144,6 +144,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(req.getEmail());
         user.setPhone(req.getPhone());
         user.setUsername(req.getUsername());
+        user.setPassword(passwordEncoder.encode(req.getPassword()));
         user.setType(req.getType());
         user.setStatus(UserStatus.NONE);
 
@@ -166,6 +167,7 @@ public class UserServiceImpl implements UserService {
                 addressEntity.setCountry(address.getCountry());
                 addressEntity.setAddressType(address.getAddressType());
                 addressEntity.setUserId(userId);
+                addresses.add(addressEntity);
             });
             addressRepository.saveAll(addresses);
             log.info("Save addresses: {}", addresses);

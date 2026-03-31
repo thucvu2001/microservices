@@ -189,5 +189,3 @@ volumes:
   postgres:
   mongo:
   grafana:
-  kafka_data:
-  zookeeper_data:

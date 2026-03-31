@@ -1,7 +1,7 @@
 package vn.thucvu.exception;
 
-public class ForBiddenException extends RuntimeException {
-    public ForBiddenException(String message) {
+public class ForbiddenException extends RuntimeException {
+    public ForbiddenException(String message) {
         super(message);
     }
 }

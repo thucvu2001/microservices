@@ -21,12 +21,10 @@ import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestControllerAdvice
-public class GlobalExceptionHandling {
+public class GlobalExceptionHandler {
     /**
      * Handle exception when validate data
      *
-     * @param e
-     * @param request
      * @return errorResponse
      */
     @ExceptionHandler({ConstraintViolationException.class,
@@ -77,12 +75,8 @@ public class GlobalExceptionHandling {
 
     /**
      * Handle exception when the request not found data
-     *
-     * @param e
-     * @param request
-     * @return
      */
-    @ExceptionHandler({ForBiddenException.class, AccessDeniedException.class})
+    @ExceptionHandler({ForbiddenException.class, AccessDeniedException.class})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "403", description = "Forbidden",
                     content = {@Content(mediaType = APPLICATION_JSON_VALUE,
@@ -113,10 +107,6 @@ public class GlobalExceptionHandling {
 
     /**
      * Handle exception when the request not found data
-     *
-     * @param e
-     * @param request
-     * @return
      */
     @ExceptionHandler(ResourceNotFoundException.class)
     @ApiResponses(value = {
@@ -149,10 +139,6 @@ public class GlobalExceptionHandling {
 
     /**
      * Handle exception when the data is conflicted
-     *
-     * @param e
-     * @param request
-     * @return
      */
     @ExceptionHandler(InvalidDataException.class)
     @ApiResponses(value = {
@@ -185,9 +171,6 @@ public class GlobalExceptionHandling {
 
     /**
      * Handle exception when internal server error
-     *
-     * @param e
-     * @param request
      * @return error
      */
     @ExceptionHandler(Exception.class)

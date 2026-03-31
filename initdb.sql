@@ -333,7 +333,7 @@ VALUES (6, 'Oanh', 'Nguyen Thi Kim', '1985-01-01', 'FEMALE'::public.e_gender, '0
        (1, 'SysAdmin', 'Sys', '1980-06-05', 'MALE'::public.e_gender, '0123456789', 'sysadmin@email.com', 'sysadmin',
         '$2a$10$y.cFBNzeymlgGpNJpm2lk.y8xrIONOY/vZHwX9vAquF7Y3ZFPYX.q', 'ACTIVE'::public.e_user_status,
         'OWNER'::public.e_user_type, '2024-04-18 09:58:07.169', '2024-08-05 11:10:30.886'),
-       (29, 'Tây', 'Java', '2003-06-05', 'MALE'::public.e_gender, '0123467891', 'admin222@email.com', 'tayjava1',
+       (29, 'Tây', 'Java', '2003-06-05', 'MALE'::public.e_gender, '0123467891', 'admin222@email.com', 'thucvu1',
         '$2a$10$y.cFBNzeymlgGpNJpm2lk.y8xrIONOY/vZHwX9vAquF7Y3ZFPYX.q', 'ACTIVE'::public.e_user_status,
         'USER'::public.e_user_type, '2024-08-06 10:08:28.483', '2024-08-06 10:08:28.483'),
        (94, 'Nam', 'Nguyễn', '2024-11-14', 'MALE'::public.e_gender, '1234567890', 'namnguyen@email.com', 'namnguyen',

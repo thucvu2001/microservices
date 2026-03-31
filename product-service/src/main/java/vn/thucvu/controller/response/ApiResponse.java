@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 
 @Builder
@@ -17,11 +18,13 @@ public class ApiResponse implements Serializable{
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Object data;
 
+    @Serial
     private void writeObject(java.io.ObjectOutputStream stream)
             throws IOException {
         stream.defaultWriteObject();
     }
 
+    @Serial
     private void readObject(java.io.ObjectInputStream stream)
             throws IOException, ClassNotFoundException {
         stream.defaultReadObject();

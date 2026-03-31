@@ -11,7 +11,7 @@ management: # cho phép hiển thị thông tin sức khoẻ của service
   endpoints:
     web:
       exposure:
-        include: '*'
+        include: health,info,prometheus
 #  endpoint:
 #    health:
 #      probes:
