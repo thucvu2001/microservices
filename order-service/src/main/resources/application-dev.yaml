@@ -14,6 +14,11 @@ spring:
     checkoutOrder: checkout-order-topic
     updateInventory: update-inventory-topic
 
+api:
+  internal:
+    paymentUrl: http://localhost:8086
+    saleOrderUrl: http://localhost:8087/sale-order
+
 openapi:
   service:
     api-docs: order-service
