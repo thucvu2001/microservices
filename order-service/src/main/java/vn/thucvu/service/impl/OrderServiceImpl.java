@@ -141,6 +141,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateOrder(UpdateOrderRequest req) {
         log.info("updateOrder called");
 
@@ -162,6 +163,7 @@ public class OrderServiceImpl implements OrderService {
                 item -> OrderItem.builder()
                         .orderId(order.getId())
                         .productId(item.getProductId())
+                        .productName(item.getProductName())
                         .quantity(item.getQuantity())
                         .unit(item.getUnit())
                         .price(item.getPrice())
@@ -204,6 +206,11 @@ public class OrderServiceImpl implements OrderService {
             throw new InvalidDataException("Push message failed");
         }
 
+        // update status
+        order.setStatus(PENDING.getValue());
+        order.setStatusName(PENDING.name());
+        order.setUpdatedAt(new Date());
+        orderRepository.save(order);
         log.info("Order checked out");
 
         // TODO: 1. Sync data with inventory-service

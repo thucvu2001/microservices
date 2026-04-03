@@ -4,10 +4,12 @@
     <data version="2">.
 	1:0:3221b67b-944b-4879-99da-35da9f2ee515:​AccountServiceApplication
 	3:0:222bf443-3c3b-45e6-8342-e5763c24d973:​MailServiceApplication
+	5:0:1fd49a62-8e03-45e2-bd60-c40f5899b300:​OrderServiceApplication
 	----------------------------------------
 	2:1:052be398-04af-48d5-a734-59301022605c
 	4:3:04dd6522-8ca0-4b63-8aca-531c94290805
-	5:0:c3b3bafe-0392-411c-8ffc-995578d2a834
+	6:5:b424fb8d-fadd-471f-9e8e-bea2e7a78c1c
+	7:0:c3b3bafe-0392-411c-8ffc-995578d2a834
 		.</data>
   </component>
   <component name="db-tree-configuration">

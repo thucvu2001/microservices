@@ -14,7 +14,9 @@ public enum PaymentMethod {
     @JsonProperty("bank_transfer")
     BANK_TRANSFER("bank_transfer"),
     @JsonProperty("digital_wallet")
-    DIGITAL_WALLET("digital_wallet");
+    DIGITAL_WALLET("digital_wallet"),
+    @JsonProperty("stripe")
+    STRIPE("stripe");
 
     private final String value;
 

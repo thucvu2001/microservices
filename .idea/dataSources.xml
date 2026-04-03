@@ -29,5 +29,13 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="mongodb://localhost:27017/order_db [DEBUG]" group="​OrderServiceApplication" uuid="b424fb8d-fadd-471f-9e8e-bea2e7a78c1c">
+      <driver-ref>mongo.4</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <jdbc-driver>com.dbschema.MongoJdbcDriver</jdbc-driver>
+      <jdbc-url>mongodb://localhost:27017/order_db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
