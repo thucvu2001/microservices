@@ -1,0 +1,16 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  devtools:
+    add-properties: true
+
+stripe:
+  secret-key: ${STRIPE_SECRET_KEY:sk_test_51TJExhBeYZyaJ1oYv3G5Nsm5roUthXb0spXESNYp2mWZBEoZBTK3yS742xNuU04KCacqlxo5nN9Wxx8ei3uWOL3y00uv1Hzs5B}
+
+openapi:
+  service:
+    api-docs: payment-service
+    server: http://localhost:${server.port}
+    title: Payment service
+    version: 1.0.0
