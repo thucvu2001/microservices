@@ -47,7 +47,18 @@ spring:
           filters:
             - RewritePath=/product/(?<segment>.*), /$\{segment} # thay thế ký tự /product/ thành /
             - RequestLoggingFilter
-
+        - id: order-service
+          uri: http://localhost:8086
+          predicates:
+            - Path=/order/**, /v3/api-docs/order-service
+          filters:
+            - RewritePath=/order/(?<segment>.*), /$\{segment} # thay thế ký tự /order/ thành /
+        - id: payment-service
+          uri: http://localhost:8086
+          predicates:
+            - Path=/payment/**, /v3/api-docs/payment-service
+          filters:
+            - RewritePath=/payment/(?<segment>.*), /$\{segment} # thay thế ký tự /payment/ thành /
 springdoc:
   api-docs:
     enabled: true

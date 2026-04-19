@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
      * @param request
      * @return errorResponse
      */
-    @ExceptionHandler({ConstraintViolationException.class,
+    @ExceptionHandler({ConstraintViolationException.class, ValidationException.class,
             MissingServletRequestParameterException.class, MethodArgumentNotValidException.class})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "400", description = "Bad Request",
@@ -66,6 +66,9 @@ public class GlobalExceptionHandler {
             errorResponse.setMessage(message);
         } else if (e instanceof ConstraintViolationException) {
             errorResponse.setError("Invalid Parameter");
+            errorResponse.setMessage(message.substring(message.indexOf(" ") + 1));
+        } else if (e instanceof ValidationException) {
+            errorResponse.setError("Invalid Payload");
             errorResponse.setMessage(message.substring(message.indexOf(" ") + 1));
         } else {
             errorResponse.setError("Invalid Data");

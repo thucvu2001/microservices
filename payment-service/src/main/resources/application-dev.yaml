@@ -4,9 +4,23 @@ spring:
       on-profile: dev
   devtools:
     add-properties: true
+  datasource:
+    url: jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5431}/postgres
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:password}
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVER:localhost:29092}
+    checkoutOrder: checkout-order-topic
+    updateOrderStatus: update-order-status-topic
 
 stripe:
   secret-key: ${STRIPE_SECRET_KEY:sk_test_51TJExhBeYZyaJ1oYv3G5Nsm5roUthXb0spXESNYp2mWZBEoZBTK3yS742xNuU04KCacqlxo5nN9Wxx8ei3uWOL3y00uv1Hzs5B}
+  publishable-key: ${STRIPE_PUBLISHABLE_KEY:pk_test_51TJExhBeYZyaJ1oY5UuY4UpAhIBcdnysQGblVG7cjErPCH71nQ4sElBaNehePkzDGSsLITQITkJczluzP33JNHDv00kketjpzN}
+  webhook-secret: ${STRIPE_WEBHOOK_SECRET:whsec_28471d76f359db71b36e7be73a67021b8158a90b115d3aaa4005d2d61b15c5ed}
 
 openapi:
   service:

@@ -1,6 +1,6 @@
 package vn.thucvu.service.impl;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
@@ -46,6 +46,8 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private final ObjectMapper objectMapper;
+
 
     @Value("${spring.kafka.checkoutOrder}")
     private String checkoutOrderTopic;
@@ -198,7 +200,7 @@ public class OrderServiceImpl implements OrderService {
 
         // convert message to json
         try {
-            String jsonMessage = new Gson().toJson(paymentMessage);
+            String jsonMessage = objectMapper.writeValueAsString(paymentMessage);
             kafkaTemplate.send(checkoutOrderTopic, jsonMessage);
             log.info("checkoutOrder sent message to Payment service message: {}", jsonMessage);
         } catch (Exception e) {
