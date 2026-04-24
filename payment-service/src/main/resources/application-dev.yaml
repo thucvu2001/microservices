@@ -14,8 +14,8 @@ spring:
       ddl-auto: none
   kafka:
     bootstrap-servers: ${KAFKA_SERVER:localhost:29092}
-    checkoutOrder: checkout-order-topic
-    updateOrderStatus: update-order-status-topic
+    checkout-order: checkout-order-topic
+    update-order-status: update-order-status-topic
 
 stripe:
   secret-key: ${STRIPE_SECRET_KEY:sk_test_51TJExhBeYZyaJ1oYv3G5Nsm5roUthXb0spXESNYp2mWZBEoZBTK3yS742xNuU04KCacqlxo5nN9Wxx8ei3uWOL3y00uv1Hzs5B}

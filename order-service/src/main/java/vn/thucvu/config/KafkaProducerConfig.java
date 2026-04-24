@@ -21,7 +21,7 @@ public class KafkaProducerConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    @Value("${spring.kafka.checkoutOrder}")
+    @Value("${spring.kafka.checkout-order}")
     private String checkoutOrderTopic;
 
     @Value("${spring.profiles.active}")

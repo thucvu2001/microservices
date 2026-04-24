@@ -14,7 +14,7 @@ import vn.thucvu.controller.request.ChargeRequest;
 import vn.thucvu.controller.request.PaymentIntentRequest;
 import vn.thucvu.controller.response.ApiResponse;
 import vn.thucvu.controller.response.PaymentIntentResponse;
-import vn.thucvu.service.impl.PaymentServiceImpl;
+import vn.thucvu.service.PaymentService;
 
 import java.util.Map;
 
@@ -23,7 +23,7 @@ import java.util.Map;
 @Slf4j
 public class PaymentController {
 
-    private final PaymentServiceImpl paymentService;
+    private final PaymentService paymentService;
 
     @Operation(summary = "Create payment intent", description = "API Pay for order")
     @PostMapping("/create-payment-intent")

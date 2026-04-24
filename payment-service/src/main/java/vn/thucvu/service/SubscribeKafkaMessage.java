@@ -17,12 +17,12 @@ import java.time.Instant;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j(topic = "TRANSACTION-LISTENER")
-public class TransactionListener {
+@Slf4j(topic = "SUBSCRIBE-KAFKA-MESSAGE")
+public class SubscribeKafkaMessage {
 
     private final TransactionRepository transactionRepository;
 
-    @KafkaListener(topics = "${spring.kafka.checkoutOrder}", groupId = "checkout-order-group")
+    @KafkaListener(topics = "${spring.kafka.checkout-order}", groupId = "checkout-order-group")
     public void checkoutOrderTopic(String message) throws IOException {
         log.info("Checkout order topic: {}", message);
 

@@ -42,9 +42,7 @@ public class PaymentServiceImpl implements PaymentService {
      * PaymentIntent is a key concept used to manage the lifecycle of a payment. It represents an attempt to collect payment from a customer
      * and is designed to handle complex payment flows, including multi-step authentication (e.g., 3D Secure) and retries for failed payments.
      *
-     * @param request
      * @return return the clientSecret to the frontend
-     * @throws StripeException
      */
     @Override
     public PaymentIntentResponse createPaymentIntent(PaymentIntentRequest request) throws StripeException {
@@ -96,11 +94,6 @@ public class PaymentServiceImpl implements PaymentService {
         return confirmedIntent.getStatus();
     }
 
-    /**
-     * Charge refers to the process of charging a customer's credit or debit card through the Stripe payment platform.
-     * It is a fundamental action in Stripe's payment processing system, allowing businesses to collect payments from their customers.
-     * When a transaction occurs, Stripe creates a "charge" to initiate and manage the payment process.
-     */
     /**
      * Charge refers to the process of charging a customer's credit or debit card through the Stripe payment platform.
      * It is a fundamental action in Stripe's payment processing system, allowing businesses to collect payments from their customers.

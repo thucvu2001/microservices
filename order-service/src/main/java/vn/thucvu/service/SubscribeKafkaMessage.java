@@ -15,22 +15,19 @@ import vn.thucvu.model.Order;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j(topic = "KAFKA-MESSAGE-LISTENER")
-public class KafkaMessageListener {
+@Slf4j(topic = "SUBSCRIBE-KAFKA-MESSAGE")
+public class SubscribeKafkaMessage {
 
     private final OrderService orderService;
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    @Value("${spring.kafka.updateInventory}")
+    @Value("${spring.kafka.update-inventory}")
     private String updateInventoryTopic;
 
     /**
      * Listen event from payment success
-     *
-     * @param message
-     * @throws JsonProcessingException
      */
-    @KafkaListener(topics = "update-order-status-topic", groupId = "update-order-status-group")
+    @KafkaListener(topics = "${spring.kafka.update-order-status}", groupId = "update-order-status-group")
     public void handleEventChangeOrderStatus(String message) throws JsonProcessingException {
         log.info("handleEventChangeOrderStatus called, message: {}", message);
 

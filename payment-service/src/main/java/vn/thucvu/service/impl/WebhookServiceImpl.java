@@ -24,7 +24,7 @@ public class WebhookServiceImpl implements WebhookService {
     private final TransactionService transactionService;
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    @Value("${spring.kafka.updateOrderStatus}")
+    @Value("${spring.kafka.update-order-status}")
     private String updateOrderStatusTopic;
 
     @Override
@@ -67,8 +67,6 @@ public class WebhookServiceImpl implements WebhookService {
     /**
      * Get payment by event
      *
-     * @param event
-     * @return
      */
     private String getPaymentId(Event event) {
         log.info("getPaymentId by event: {}", event.getId());

@@ -49,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
     private final ObjectMapper objectMapper;
 
 
-    @Value("${spring.kafka.checkoutOrder}")
+    @Value("${spring.kafka.checkout-order}")
     private String checkoutOrderTopic;
 
     @Override
