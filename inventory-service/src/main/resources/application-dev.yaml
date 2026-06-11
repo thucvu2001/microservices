@@ -1,0 +1,24 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  devtools:
+    add-properties: true
+  datasource:
+    url: jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5431}/postgres
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:password}
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVER:localhost:29092}
+    update-inventory: update-inventory-topic
+
+openapi:
+  service:
+    api-docs: payment-service
+    server: http://localhost:${server.port}
+    title: Payment service
+    version: 1.0.0

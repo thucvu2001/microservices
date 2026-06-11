@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cửa hàng — Thanh toán Online</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #6c63ff;
+            --primary-light: #8b85ff;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --bg: #0d0d1a;
+            --bg-surface: rgba(255, 255, 255, 0.04);
+            --bg-surface-hover: rgba(255, 255, 255, 0.07);
+            --border: rgba(255, 255, 255, 0.09);
+            --border-strong: rgba(255, 255, 255, 0.14);
+            --text-primary: #ededf5;
+            --text-secondary: #9a9ab0;
+            --text-muted: #5a5a70;
+        }
+
+        html, body {
+            min-height: 100vh;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Animated background */
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::before {
+            top: -15%;
+            left: -5%;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(108, 99, 255, 0.12) 0%, transparent 70%);
+            animation: glow1 14s ease-in-out infinite alternate;
+        }
+
+        body::after {
+            bottom: -15%;
+            right: -5%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.09) 0%, transparent 70%);
+            animation: glow2 11s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow1 {
+            to { transform: translate(50px, 30px) scale(1.08); }
+        }
+
+        @keyframes glow2 {
+            to { transform: translate(-50px, -40px) scale(1.12); }
+        }
+
+        /* Layout */
+        .page-layout {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 28px;
+            max-width: 1080px;
+            width: 100%;
+            margin: 40px auto;
+            padding: 0 24px;
+            align-items: start;
+        }
+
+        /* ── Section titles ── */
+        .section-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        /* ── Product list panel ── */
+        .panel {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px 26px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            animation: fadeSlideUp 0.4s ease both;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .panel-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .panel-icon.shop  { background: linear-gradient(135deg, #6c63ff, #8b85ff); box-shadow: 0 6px 18px rgba(108,99,255,.35); }
+        .panel-icon.cart  { background: linear-gradient(135deg, #f59e0b, #fbbf24); box-shadow: 0 6px 18px rgba(245,158,11,.35); }
+        .panel-icon.pay   { background: linear-gradient(135deg, #10b981, #34d399); box-shadow: 0 6px 18px rgba(16,185,129,.35); }
+
+        .panel-header h2 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.2px;
+        }
+
+        .panel-header p {
+            font-size: 12.5px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* ── Products ── */
+        .product-grid {
+            display: grid;
+            gap: 10px;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-surface-hover);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 18px;
+            transition: border-color 0.2s, background 0.2s, transform 0.15s;
+            cursor: default;
+        }
+
+        .product-item:hover {
+            border-color: var(--border-strong);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .product-emoji {
+            font-size: 26px;
+            width: 46px;
+            height: 46px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-name {
+            font-size: 14.5px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .product-price {
+            font-size: 12.5px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .btn-add {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 9px 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 14px rgba(108,99,255,.3);
+            white-space: nowrap;
+        }
+
+        .btn-add:hover {
+            box-shadow: 0 6px 20px rgba(108,99,255,.45);
+            transform: translateY(-1px);
+        }
+
+        .btn-add:active {
+            transform: scale(0.96);
+        }
+
+        /* ── Divider ── */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 22px 0;
+        }
+
+        /* ── Cart ── */
+        #cart:empty::after {
+            content: 'Giỏ hàng trống';
+            display: block;
+            text-align: center;
+            padding: 20px 0;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-style: italic;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: var(--bg-surface-hover);
+            border: 1px solid var(--border);
+            margin-bottom: 8px;
+            animation: fadeSlideUp 0.25s ease;
+        }
+
+        .cart-item-info {
+            font-size: 13.5px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .cart-item-qty {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .btn-remove {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(239,68,68,0.12);
+            color: var(--error);
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: 8px;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-remove:hover {
+            background: rgba(239,68,68,0.2);
+        }
+
+        .cart-total {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 14px;
+            padding: 14px 16px;
+            background: rgba(108,99,255,0.08);
+            border: 1px solid rgba(108,99,255,0.2);
+            border-radius: 12px;
+        }
+
+        .cart-total span {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .cart-total strong {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-light);
+        }
+
+        /* ── Payment Panel (right column) ── */
+        .payment-column {
+            position: sticky;
+            top: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        #payment-form {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px 26px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            animation: fadeSlideUp 0.45s ease both;
+        }
+
+        label.field-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.9px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 9px;
+        }
+
+        #card-element {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        #card-element:focus-within {
+            border-color: rgba(108, 99, 255, 0.5);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.12);
+        }
+
+        .secure-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11.5px;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        .secure-tag .dot {
+            width: 7px;
+            height: 7px;
+            background: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 6px rgba(16,185,129,.6);
+            animation: pulse 1.8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.8); }
+        }
+
+        #payment-result {
+            margin: 14px 0 4px;
+            min-height: 4px;
+        }
+
+        #payment-result p {
+            font-size: 13px;
+            font-weight: 500;
+            padding: 12px 15px;
+            border-radius: 10px;
+            animation: fadeSlideUp 0.3s ease;
+        }
+
+        .msg-success {
+            color: var(--success);
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.2);
+        }
+
+        .msg-error {
+            color: var(--error);
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.2);
+        }
+
+        #btn-pay {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin-top: 18px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #fff;
+            border: none;
+            border-radius: 13px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 24px rgba(108,99,255,.4);
+            letter-spacing: 0.1px;
+        }
+
+        #btn-pay:hover {
+            box-shadow: 0 10px 32px rgba(108,99,255,.55);
+            transform: translateY(-1px);
+        }
+
+        #btn-pay:active {
+            transform: scale(0.98);
+        }
+
+        #btn-pay:disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Stripe footer */
+        .stripe-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 16px;
+            font-size: 11.5px;
+            color: var(--text-muted);
+        }
+
+        .stripe-footer .logo {
+            color: #635bff;
+            font-weight: 700;
+            font-size: 12.5px;
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-layout {
+                grid-template-columns: 1fr;
+            }
+            .payment-column {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-layout">
+
+    <!-- LEFT: Products + Cart -->
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+
+        <!-- Product list -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-icon shop">🛍️</div>
+                <div>
+                    <h2>Danh sách sản phẩm</h2>
+                    <p>Chọn sản phẩm để thêm vào giỏ hàng</p>
+                </div>
+            </div>
+            <div class="product-grid">
+                <div class="product-item">
+                    <div class="product-info">
+                        <div class="product-emoji">🍜</div>
+                        <div>
+                            <div class="product-name">Mì Hảo Hảo</div>
+                            <div class="product-price">5.000₫ / gói</div>
+                        </div>
+                    </div>
+                    <button class="btn-add" onclick="addToCart('Mì Hảo Hảo', 5000)">+ Thêm</button>
+                </div>
+                <div class="product-item">
+                    <div class="product-info">
+                        <div class="product-emoji">🍺</div>
+                        <div>
+                            <div class="product-name">Bia Hà Nội</div>
+                            <div class="product-price">10.000₫ / lon</div>
+                        </div>
+                    </div>
+                    <button class="btn-add" onclick="addToCart('Bia Hà Nội', 10000)">+ Thêm</button>
+                </div>
+                <div class="product-item">
+                    <div class="product-info">
+                        <div class="product-emoji">🐟</div>
+                        <div>
+                            <div class="product-name">Cá Hồi</div>
+                            <div class="product-price">25.000₫ / gram</div>
+                        </div>
+                    </div>
+                    <button class="btn-add" onclick="addToCart('Cá Hồi', 25000)">+ Thêm</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cart -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-icon cart">🛒</div>
+                <div>
+                    <h2>Giỏ hàng</h2>
+                    <p>Xem lại đơn hàng của bạn</p>
+                </div>
+            </div>
+            <div id="cart"></div>
+            <div id="cart-total-wrap" style="display:none;">
+                <div class="cart-total">
+                    <span>Tổng cộng</span>
+                    <strong id="cart-total-amount">0₫</strong>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- RIGHT: Payment form -->
+    <div class="payment-column">
+        <form id="payment-form">
+            <div class="panel-header">
+                <div class="panel-icon pay">💳</div>
+                <div>
+                    <h2>Thanh toán</h2>
+                    <p>Bảo mật bởi Stripe · SSL</p>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <label class="field-label" for="card-element">Thông tin thẻ</label>
+            <div id="card-element"></div>
+
+            <div class="secure-tag">
+                <span class="dot"></span>
+                Thông tin thẻ được mã hóa an toàn
+            </div>
+
+            <div id="payment-result" role="alert"></div>
+
+            <button id="btn-pay" type="button" onclick="paymentIntentClick()">
+                🔒 Thanh toán ngay
+            </button>
+
+            <div class="stripe-footer">
+                Powered by <span class="logo">stripe</span>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<script th:src="@{https://js.stripe.com/v3/}" crossorigin="anonymous"></script>
+<script th:inline="javascript">
+    let cart = {};
+
+    function formatMoney(amount) {
+        return amount.toLocaleString('vi-VN') + '₫';
+    }
+
+    function addToCart(product, price) {
+        if (cart[product]) {
+            cart[product].quantity++;
+        } else {
+            cart[product] = {price: price, quantity: 1};
+        }
+        renderCart();
+    }
+
+    function removeFromCart(product) {
+        if (cart[product]) {
+            cart[product].quantity--;
+            if (cart[product].quantity === 0) {
+                delete cart[product];
+            }
+            renderCart();
+        }
+    }
+
+    function renderCart() {
+        const cartDiv = document.getElementById('cart');
+        const totalWrap = document.getElementById('cart-total-wrap');
+        cartDiv.innerHTML = '';
+        let total = 0;
+
+        for (let product in cart) {
+            let item = cart[product];
+            total += item.price * item.quantity;
+            cartDiv.innerHTML += `
+                <div class="cart-item">
+                    <div>
+                        <div class="cart-item-info">${product}</div>
+                        <div class="cart-item-qty">x${item.quantity} · ${formatMoney(item.price * item.quantity)}</div>
+                    </div>
+                    <button class="btn-remove" onclick="removeFromCart('${product}')">Xoá</button>
+                </div>`;
+        }
+
+        if (total > 0) {
+            totalWrap.style.display = 'block';
+            document.getElementById('cart-total-amount').textContent = formatMoney(total);
+        } else {
+            totalWrap.style.display = 'none';
+        }
+    }
+
+    const stripe = Stripe(/*[[${publishableKey}]]*/);
+    const elements = stripe.elements({
+        appearance: {
+            theme: 'night',
+            variables: {
+                colorPrimary: '#6c63ff',
+                colorText: '#ededf5',
+                colorDanger: '#ef4444',
+                fontFamily: 'Inter, sans-serif',
+                borderRadius: '8px',
+            }
+        }
+    });
+
+    const cardElement = elements.create('card', {
+        style: {
+            base: {
+                color: '#ededf5',
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '15px',
+                '::placeholder': {color: '#5a5a70'},
+            },
+            invalid: {color: '#ef4444'},
+        }
+    });
+    cardElement.mount('#card-element');
+
+    function showResult(type, message) {
+        const el = document.getElementById('payment-result');
+        el.innerHTML = `<p class="${type === 'success' ? 'msg-success' : 'msg-error'}">${message}</p>`;
+    }
+
+    async function paymentIntentClick() {
+        const btn = document.getElementById('btn-pay');
+        btn.disabled = true;
+        btn.textContent = '⏳ Đang xử lý…';
+
+        const {error} = await stripe.createPaymentMethod({
+            type: 'card',
+            card: cardElement,
+        });
+
+        if (error) {
+            showResult('error', '❌ ' + error.message);
+            btn.disabled = false;
+            btn.textContent = '🔒 Thanh toán ngay';
+            return;
+        }
+
+        // Step 1: Create order → get orderId
+        const orderResponse = await fetch('http://localhost:8085/order/add', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                customerId: 4,
+                amount: 50000,
+                currency: "vnd",
+                paymentMethod: "card",
+                orderItems: [
+                    {productId: 1, quantity: 2, productName: "Mì Hảo Hảo", price: 5000,  unit: "gói"},
+                    {productId: 2, quantity: 1, productName: "Bia Hà Nội",  price: 10000, unit: "lon"},
+                    {productId: 3, quantity: 1, productName: "Cá Hồi",      price: 25000, unit: "gram"}
+                ]
+            })
+        });
+
+        const {data: orderId} = await orderResponse.json();
+        console.log("OrderID:", orderId);
+
+        // Step 2: Create payment intent via payment-service
+        const responseIntent = await fetch('http://localhost:8086/create-payment-intent', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                customerId: 2,
+                orderId: orderId || "fdad3252-b14b-4ae7-81e1-f36583f57ca3",
+                paymentMethod: "card",
+                amount: 22222,
+                currency: "usd",
+                description: "Example payment intent from browser"
+            })
+        });
+
+        const {clientSecret} = await responseIntent.json();
+
+        // Step 3: Confirm card payment with Stripe
+        const {error: confirmError, paymentIntent} = await stripe.confirmCardPayment(
+            clientSecret,
+            {payment_method: {card: cardElement}}
+        );
+
+        if (confirmError) {
+            showResult('error', `❌ Thanh toán thất bại: ${confirmError.message}`);
+        } else {
+            showResult('success', `✅ Thanh toán thành công! ID: ${paymentIntent.id}`);
+            cart = {};
+            renderCart();
+        }
+
+        btn.disabled = false;
+        btn.textContent = '🔒 Thanh toán ngay';
+    }
+</script>
+</body>
+</html>

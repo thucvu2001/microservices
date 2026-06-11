@@ -20,6 +20,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
     /**
      * Handle exception when validate data
      *

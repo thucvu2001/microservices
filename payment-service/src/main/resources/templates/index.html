@@ -3,43 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
-    <title>Payment Intent</title>
+    <title>Payment Intent — Secure Checkout</title>
     <style>
-        * {
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        *, *::before, *::after {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #6c63ff;
+            --primary-light: #8b85ff;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --bg: #0f0f1a;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --bg-card-hover: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.1);
+            --border-focus: rgba(108, 99, 255, 0.5);
+            --text-primary: #f1f1f5;
+            --text-secondary: #9a9aad;
+            --text-muted: #5e5e72;
         }
 
         body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
         }
 
+        /* Animated background blobs */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -20%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(108, 99, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: blobMove1 12s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -20%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: blobMove2 10s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        @keyframes blobMove1 {
+            0%   { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(60px, 40px) scale(1.1); }
+        }
+
+        @keyframes blobMove2 {
+            0%   { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-40px, -60px) scale(1.15); }
+        }
+
+        /* Card wrapper */
         #payment-form {
-            width: 40%;
-            margin-left: 30%;
-            margin-top: 5%;
-            border: 1px silver solid;
-            padding: 20px;
-            background-color: whitesmoke;
+            position: relative;
+            width: 100%;
+            max-width: 460px;
+            background: var(--bg-card);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px 36px;
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,0.03),
+                0 24px 64px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            animation: slideUp 0.5s ease both;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(32px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Header */
+        .form-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 32px;
+        }
+
+        .form-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 8px 20px rgba(108, 99, 255, 0.35);
+            flex-shrink: 0;
+        }
+
+        .form-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.3px;
+        }
+
+        .form-header p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 0 0 24px 0;
+        }
+
+        /* Label */
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        /* Card element container */
+        #card-element {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        #card-element:focus-within {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+        }
+
+        /* Secure badge */
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11.5px;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        .secure-badge svg {
+            color: var(--success);
+        }
+
+        /* Payment result */
+        #payment-result {
+            min-height: 20px;
+            margin: 16px 0 4px 0;
+        }
+
+        #payment-result p {
+            font-size: 13.5px;
+            font-weight: 500;
+            padding: 12px 16px;
+            border-radius: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        #payment-result .msg-success {
+            color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        #payment-result .msg-error {
+            color: var(--error);
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Buttons row */
+        .btn-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        button {
+            font-family: 'Inter', sans-serif;
+            font-size: 14.5px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.1px;
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0);
+            transition: background 0.2s;
+        }
+
+        button:hover::after {
+            background: rgba(255,255,255,0.08);
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+        #btn-payment-intent {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);
+        }
+
+        #btn-payment-intent:hover {
+            box-shadow: 0 8px 28px rgba(108, 99, 255, 0.55);
+        }
+
+        #btn-charge {
+            background: rgba(255,255,255,0.07);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        #btn-charge:hover {
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        /* Loading state */
+        button.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        /* Stripe badge */
+        .stripe-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 24px;
+            font-size: 11.5px;
+            color: var(--text-muted);
+        }
+
+        .stripe-badge img {
+            height: 18px;
+            opacity: 0.5;
+            filter: grayscale(1) brightness(2);
         }
     </style>
 </head>
 <body>
+
 <div id="payment-form">
-    <h2>Payment by Stripe</h2>
-    <label for="card-element">Credit or debit card:</label><br>
+    <div class="form-header">
+        <div class="form-icon">💳</div>
+        <div>
+            <h2>Secure Payment</h2>
+            <p>Powered by Stripe · SSL Encrypted</p>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <label for="card-element">Card information</label>
     <div id="card-element">
-        <!-- Elements will create input elements here -->
+        <!-- Stripe Elements will inject here -->
+    </div>
+
+    <div class="secure-badge">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+        </svg>
+        Your payment info is encrypted and secure
     </div>
 
     <div id="payment-result" role="alert"></div>
 
-    <br>
-    <button id="btn-payment-intent">Pay</button>
-    <button id="btn-charge">Charge</button>
+    <div class="btn-row">
+        <button id="btn-payment-intent">⚡ Pay Now</button>
+        <button id="btn-charge">🏦 Charge Card</button>
+    </div>
+
+    <div class="stripe-badge">
+        Secured by
+        <img id="stripe-logo" src="https://stripe.com/img/v3/home/twitter.png" alt="Stripe">
+        <strong style="color: #635bff; font-size: 12px;">stripe</strong>
+    </div>
 </div>
 
-<script src="https://js.stripe.com/v3/"></script>
+<script th:src="@{https://js.stripe.com/v3/}" crossorigin="anonymous"></script>
 <script th:inline="javascript">
     // noinspection JSUnresolvedReference
     /**
@@ -60,40 +353,74 @@
      * @property {function(string): void} mount
      */
 
-        // noinspection JSUnresolvedReference
+    // noinspection JSUnresolvedReference
     const publishableKey = /*[[${publishableKey}]]*/ '';
 
     /** @type {StripeInstance} */
-    const stripe = (/** @type {function(string): StripeInstance} */ window.Stripe)(publishableKey);
+    const stripe = (/** @type {function(string): StripeInstance} */ globalThis.Stripe)(publishableKey);
 
     /**
      * @type {StripeElements}
      */
-    const elements = stripe.elements();
+    const elements = stripe.elements({
+        appearance: {
+            theme: 'night',
+            variables: {
+                colorPrimary: '#6c63ff',
+                colorBackground: 'rgba(255,255,255,0.04)',
+                colorText: '#f1f1f5',
+                colorDanger: '#ef4444',
+                fontFamily: 'Inter, sans-serif',
+                borderRadius: '8px',
+            }
+        }
+    });
 
     /**
      * @type {StripeElement}
      */
-    const cardElement = elements.create('card');
+    const cardElement = elements.create('card', {
+        style: {
+            base: {
+                color: '#f1f1f5',
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '15px',
+                '::placeholder': { color: '#5e5e72' },
+            },
+            invalid: { color: '#ef4444' },
+        }
+    });
     cardElement.mount('#card-element');
+
+    const stripeLogo = document.getElementById('stripe-logo');
+    if (stripeLogo) {
+        stripeLogo.addEventListener('error', function() {
+            this.style.display = 'none';
+        });
+    }
 
     const paymentResult = document.getElementById('payment-result');
 
+    function showResult(type, message) {
+        paymentResult.innerHTML = `<p class="${type === 'success' ? 'msg-success' : 'msg-error'}">${message}</p>`;
+    }
+
     document.getElementById('btn-payment-intent').addEventListener('click', async function (event) {
         event.preventDefault();
+        this.classList.add('loading');
+        this.textContent = 'Processing…';
 
-        const {error: createError, paymentMethod} = await stripe.createPaymentMethod({
+        const {error: createError} = await stripe.createPaymentMethod({
             type: 'card',
             card: cardElement,
         });
 
         if (createError) {
-            console.error(createError);
-            paymentResult.innerHTML = `<p style="color: red">Error: ${createError.message}</p>`;
+            showResult('error', `❌ ${createError.message}`);
+            this.classList.remove('loading');
+            this.textContent = '⚡ Pay Now';
             return;
         }
-
-        console.log('PaymentMethod created:', paymentMethod.id);
 
         const response = await fetch('http://localhost:8086/create-payment-intent', {
             method: 'POST',
@@ -120,20 +447,26 @@
         );
 
         if (confirmError) {
-            paymentResult.innerHTML = `<p style="color: red">Payment failed: ${confirmError.message}</p>`;
+            showResult('error', `❌ Payment failed: ${confirmError.message}`);
         } else {
-            paymentResult.innerHTML = `<p style="color: blue">Payment succeeded! Payment ID: ${paymentIntent.id}</p>`;
+            showResult('success', `✅ Payment succeeded! ID: ${paymentIntent.id}`);
         }
+
+        this.classList.remove('loading');
+        this.textContent = '⚡ Pay Now';
     });
 
     document.getElementById('btn-charge').addEventListener('click', async function (event) {
         event.preventDefault();
+        this.classList.add('loading');
+        this.textContent = 'Charging…';
 
         const {token, error} = await stripe.createToken(cardElement);
 
         if (error) {
-            console.error(error);
-            paymentResult.innerHTML = `<p style="color: red">Error: ${error.message}</p>`;
+            showResult('error', `❌ ${error.message}`);
+            this.classList.remove('loading');
+            this.textContent = '🏦 Charge Card';
             return;
         }
 
@@ -152,7 +485,10 @@
         });
 
         const {status} = await response.json();
-        paymentResult.innerHTML = `<p style="color: blue">Payment status: <span style="color: red">${status}</span></p>`;
+        showResult('success', `✅ Payment status: <strong>${status}</strong>`);
+
+        this.classList.remove('loading');
+        this.textContent = '🏦 Charge Card';
     });
 </script>
 </body>

@@ -1,112 +1,119 @@
--- DROP TYPE public."e_gender";
+CREATE TYPE e_currency AS ENUM (
+	'CHF',
+	'EUR',
+	'GBP',
+	'JPY',
+	'USD',
+	'VND');
 
-CREATE TYPE public."e_gender" AS ENUM (
+CREATE TYPE e_gender AS ENUM (
 	'MALE',
 	'FEMALE',
 	'OTHER');
 
--- DROP TYPE public."e_user_status";
-
-CREATE TYPE public."e_user_status" AS ENUM (
+CREATE TYPE e_user_status AS ENUM (
 	'ACTIVE',
 	'INACTIVE',
+	'BLOCKED',
 	'NONE');
 
--- DROP TYPE public."e_user_type";
-
-CREATE TYPE public."e_user_type" AS ENUM (
+CREATE TYPE e_user_type AS ENUM (
 	'OWNER',
 	'ADMIN',
 	'USER');
 
--- public.tbl_permission definition
+CREATE TYPE e_order_status AS ENUM (
+	'NEW',
+	'PENDING',
+	'CANCELED',
+	'PAID',
+	'FAILED',
+	'IN_PROGRESS',
+	'DELIVERED',
+	'CLOSED');
+
+CREATE TYPE e_payment_method AS ENUM (
+	'BANK_TRANSFER',
+	'CARD',
+	'DIGITAL_WALLET',
+	'MONEY');
+
+CREATE TYPE e_transaction_status AS ENUM (
+	'CREATED',
+	'SUCCEEDED',
+	'CANCELED',
+	'FAILED');
+
+CREATE TYPE e_transaction_type AS ENUM (
+	'IN',
+	'OUT');
+
+-- tbl_permission definition
 
 -- Drop table
 
--- DROP TABLE public.tbl_permission;
+-- DROP TABLE tbl_permission;
 
-CREATE TABLE public.tbl_permission
+CREATE TABLE tbl_permission
 (
     id          serial4      NOT NULL,
     "name"      varchar(255) NOT NULL,
-    created_at  timestamp(6) NULL,
-    updated_at  timestamp(6) NULL,
     description varchar(255) NULL,
+    created_at  timestamp(6) DEFAULT NOW(),
+    updated_at  timestamp(6) DEFAULT NOW(),
     CONSTRAINT tbl_permission_pkey PRIMARY KEY (id)
 );
 
 
--- public.tbl_role definition
+-- tbl_role definition
 
 -- Drop table
 
--- DROP TABLE public.tbl_role;
+-- DROP TABLE tbl_role;
 
-CREATE TABLE public.tbl_role
+CREATE TABLE tbl_role
 (
     id          serial4      NOT NULL,
     "name"      varchar(255) NOT NULL,
-    created_at  timestamp(6) NULL,
-    updated_at  timestamp(6) NULL,
     description varchar(255) NULL,
+    created_at  timestamp(6) DEFAULT NOW(),
+    updated_at  timestamp(6) DEFAULT NOW(),
     CONSTRAINT tbl_role_pkey PRIMARY KEY (id)
 );
 
 
--- public.tbl_user definition
+-- tbl_user definition
 
 -- Drop table
 
--- DROP TABLE public.tbl_user;
+-- DROP TABLE tbl_user;
 
-CREATE TABLE public.tbl_user
+CREATE TABLE tbl_user
 (
-    id            bigserial    NOT NULL,
-    first_name    varchar(255) NOT NULL,
-    last_name     varchar(255) NOT NULL,
-    date_of_birth date         NOT NULL,
-    "gender" public."e_gender" NOT NULL,
+    id            bigserial       NOT NULL,
+    first_name    varchar(255)    NOT NULL,
+    last_name     varchar(255)    NOT NULL,
+    date_of_birth date            NOT NULL,
+    "gender"      "e_gender"      NOT NULL,
     phone         varchar(15) NULL,
     email         varchar(255) NULL,
-    username      varchar(255) NOT NULL,
+    username      varchar(255)    NOT NULL,
     "password"    varchar(255) NULL,
-    status public."e_user_status" NOT NULL,
-    "type" public."e_user_type" NOT NULL,
-    created_at    timestamp(6) DEFAULT now() NULL,
-    updated_at    timestamp(6) DEFAULT now() NULL,
+    status        "e_user_status" NOT NULL,
+    "type"        "e_user_type"   NOT NULL,
+    created_at    timestamp(6) DEFAULT now(),
+    updated_at    timestamp(6) DEFAULT now(),
     CONSTRAINT tbl_user_pkey PRIMARY KEY (id)
 );
 
--- public.tbl_product definition
+
+-- tbl_address definition
 
 -- Drop table
 
--- DROP TABLE public.tbl_product
+-- DROP TABLE tbl_address;
 
-CREATE TABLE public.tbl_product
-(
-    id          bigserial      NOT NULL,
-    name        varchar(255)   NOT NULL,
-    description varchar(255),
-    price       float8         NOT NULL,
-    user_id     int8           NOT NULL,
-    created_at  timestamp(6)   DEFAULT now(),
-    updated_at  timestamp(6)   DEFAULT now(),
-
-    CONSTRAINT tbl_product_pkey PRIMARY KEY (id),
-    CONSTRAINT fk_product_to_user FOREIGN KEY (user_id)
-        REFERENCES public.tbl_user (id)
-);
-
-
-
--- public.tbl_address definition
-
--- Drop table
-
--- DROP TABLE public.tbl_address;
-
-CREATE TABLE public.tbl_address
+CREATE TABLE tbl_address
 (
     id               bigserial NOT NULL,
     apartment_number varchar(255) NULL,
@@ -118,87 +125,166 @@ CREATE TABLE public.tbl_address
     country          varchar(255) NULL,
     address_type     int4 NULL,
     user_id          int8 NULL,
-    created_at       timestamp(6) DEFAULT now() NULL,
-    updated_at       timestamp(6) DEFAULT now() NULL,
+    created_at       timestamp(6) DEFAULT now(),
+    updated_at       timestamp(6) DEFAULT now(),
     CONSTRAINT tbl_address_pkey PRIMARY KEY (id),
-    CONSTRAINT fk_address_to_user FOREIGN KEY (user_id) REFERENCES public.tbl_user (id)
+    CONSTRAINT fk_address_to_user FOREIGN KEY (user_id) REFERENCES tbl_user (id)
 );
 
 
--- public.tbl_group definition
+-- tbl_group definition
 
 -- Drop table
 
--- DROP TABLE public.tbl_group;
+-- DROP TABLE tbl_group;
 
-CREATE TABLE public.tbl_group
+CREATE TABLE tbl_group
 (
     id          serial4      NOT NULL,
     "name"      varchar(255) NOT NULL,
     role_id     serial4      NOT NULL,
-    created_at  timestamp(6) NULL,
-    updated_at  timestamp(6) NULL,
+    created_at  timestamp(6) DEFAULT NOW(),
+    updated_at  timestamp(6) DEFAULT NOW(),
     description varchar(255) NULL,
     CONSTRAINT tbl_group_pkey PRIMARY KEY (id),
-    CONSTRAINT fk_group_to_role FOREIGN KEY (role_id) REFERENCES public.tbl_role (id)
+    CONSTRAINT fk_group_to_role FOREIGN KEY (role_id) REFERENCES tbl_role (id)
 );
 
 
--- public.tbl_group_has_user definition
+-- tbl_group_has_user definition
 
 -- Drop table
 
--- DROP TABLE public.tbl_group_has_user;
+-- DROP TABLE tbl_group_has_user;
 
-CREATE TABLE public.tbl_group_has_user
+CREATE TABLE tbl_group_has_user
 (
-    id         int4 GENERATED BY DEFAULT AS IDENTITY ( INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START 1 CACHE 1 NO CYCLE) NOT NULL,
-    created_at timestamp(6) NULL,
-    updated_at timestamp(6) NULL,
+    id         serial4 NOT NULL,
     group_id   int4 NULL,
     user_id    int8 NULL,
+    created_at timestamp(6) DEFAULT NOW(),
+    updated_at timestamp(6) DEFAULT NOW(),
     CONSTRAINT tbl_group_has_user_pkey PRIMARY KEY (id),
-    CONSTRAINT fkk23xt6t0rhoc1s185sekeayf9 FOREIGN KEY (group_id) REFERENCES public.tbl_group (id),
-    CONSTRAINT fkqpbvdln7wyp9dnjvrx0mrrnk1 FOREIGN KEY (user_id) REFERENCES public.tbl_user (id)
+    CONSTRAINT fkk23xt6t0rhoc1s185sekeayf9 FOREIGN KEY (group_id) REFERENCES tbl_group (id),
+    CONSTRAINT fkqpbvdln7wyp9dnjvrx0mrrnk1 FOREIGN KEY (user_id) REFERENCES tbl_user (id)
 );
 
 
--- public.tbl_role_has_permission definition
+-- tbl_role_has_permission definition
 
 -- Drop table
 
--- DROP TABLE public.tbl_role_has_permission;
+-- DROP TABLE tbl_role_has_permission;
 
-CREATE TABLE public.tbl_role_has_permission
+CREATE TABLE tbl_role_has_permission
 (
     id            serial4 NOT NULL,
     role_id       serial4 NOT NULL,
     permission_id serial4 NOT NULL,
-    created_at    timestamp(6) NULL,
-    updated_at    timestamp(6) NULL,
+    created_at    timestamp(6) DEFAULT NOW(),
+    updated_at    timestamp(6) DEFAULT NOW(),
     CONSTRAINT tbl_role_has_permission_pkey PRIMARY KEY (id),
-    CONSTRAINT fk_role_has_permission_to_permission FOREIGN KEY (permission_id) REFERENCES public.tbl_permission (id),
-    CONSTRAINT fk_role_has_permission_to_role FOREIGN KEY (role_id) REFERENCES public.tbl_role (id)
+    CONSTRAINT fk_role_has_permission_to_permission FOREIGN KEY (permission_id) REFERENCES tbl_permission (id),
+    CONSTRAINT fk_role_has_permission_to_role FOREIGN KEY (role_id) REFERENCES tbl_role (id)
 );
 
 
--- public.tbl_user_has_role definition
+-- tbl_user_has_role definition
 
 -- Drop table
 
--- DROP TABLE public.tbl_user_has_role;
+-- DROP TABLE tbl_user_has_role;
 
-CREATE TABLE IF NOT EXISTS public.tbl_user_has_role
+CREATE TABLE tbl_user_has_role
 (
     id         serial4   NOT NULL,
     user_id    bigserial NOT NULL,
     role_id    serial4   NOT NULL,
-    created_at timestamp(6) NULL,
-    updated_at timestamp(6) NULL,
+    created_at timestamp(6) DEFAULT NOW(),
+    updated_at timestamp(6) DEFAULT NOW(),
     CONSTRAINT tbl_user_has_role_pkey PRIMARY KEY (id),
-    CONSTRAINT fk_user_has_role_to_role FOREIGN KEY (role_id) REFERENCES public.tbl_role (id),
-    CONSTRAINT fk_user_has_role_to_user FOREIGN KEY (user_id) REFERENCES public.tbl_user (id)
+    CONSTRAINT fk_user_has_role_to_role FOREIGN KEY (role_id) REFERENCES tbl_role (id),
+    CONSTRAINT fk_user_has_role_to_user FOREIGN KEY (user_id) REFERENCES tbl_user (id)
 );
+
+-- tbl_inventory_transactions definition
+
+-- Drop table
+
+-- DROP TABLE tbl_inventory_transactions;
+
+CREATE TABLE tbl_inventory_transactions
+(
+    id           serial4 NOT NULL,
+    product_id   int8 NULL,
+    quantity     int8 NULL,
+    "type"       e_transaction_type NULL,
+    reference_id int8 NULL,
+    created_at   timestamp(6) DEFAULT NOW(),
+    updated_at   timestamp(6) DEFAULT NOW(),
+    CONSTRAINT tbl_inventory_transactions_pkey PRIMARY KEY (id)
+);
+
+
+--  tbl_sales_order_items definition
+
+-- Drop table
+
+-- DROP TABLE tbl_sales_order_items;
+
+CREATE TABLE tbl_sales_order_items
+(
+    id         serial4      NOT NULL,
+    sales_id   varchar(255) NOT NULL,
+    product_id int8         NOT NULL,
+    quantity   int4         NOT NULL,
+    price      int8         NOT NULL,
+    CONSTRAINT tbl_sales_order_items_pkey PRIMARY KEY (id)
+);
+
+
+-- tbl_sales_orders definition
+
+-- Drop table
+
+-- DROP TABLE tbl_sales_orders;
+
+CREATE TABLE tbl_sales_orders
+(
+    id             varchar(255)     NOT NULL,
+    customer_id    int8 NULL,
+    total_amount   int8             NOT NULL,
+    currency       e_currency       NOT NULL,
+    payment_method e_payment_method NOT NULL,
+    status         e_order_status   NOT NULL,
+    created_at     timestamp(6) DEFAULT NOW(),
+    updated_at     timestamp(6) DEFAULT NOW(),
+    CONSTRAINT tbl_sales_orders_pkey PRIMARY KEY (id)
+);
+
+
+-- tbl_transaction definition
+
+-- Drop table
+
+-- DROP TABLE tbl_transaction;
+
+CREATE TABLE tbl_transaction
+(
+    id             serial4          NOT NULL,
+    customer_id    int8 NULL,
+    order_id       varchar(255) NULL,
+    payment_id     varchar(255) NULL,
+    payment_method e_payment_method NOT NULL,
+    amount         int8             not NULL,
+    currency       e_currency       NOT NULL,
+    description    varchar(255) NULL,
+    status         e_transaction_status NULL,
+    created_at     timestamp(6) DEFAULT NOW(),
+    updated_at     timestamp(6) DEFAULT NOW(),
+    CONSTRAINT tbl_transaction_pkey PRIMARY KEY (id)
+);
+
 
 -- Insert data
 

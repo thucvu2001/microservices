@@ -6,8 +6,6 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.ConstraintViolationException;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,9 +23,9 @@ public class GlobalExceptionHandler {
     /**
      * Handle exception when validate data
      *
-     * @param e
-     * @param request
-     * @return errorResponse
+     * @param e       the exception thrown during validation
+     * @param request the current web request
+     * @return errorResponse containing status 400 and validation error details
      */
     @ExceptionHandler({ConstraintViolationException.class,
             MissingServletRequestParameterException.class, MethodArgumentNotValidException.class})
@@ -76,11 +74,11 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Handle exception when the request not found data
+     * Handle exception when access is denied or forbidden
      *
-     * @param e
-     * @param request
-     * @return
+     * @param e       the exception thrown when access is denied
+     * @param request the current web request
+     * @return errorResponse containing status 403 and forbidden error details
      */
     @ExceptionHandler({ForbiddenException.class, AccessDeniedException.class})
     @ApiResponses(value = {
@@ -112,11 +110,11 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Handle exception when the request not found data
+     * Handle exception when the requested resource is not found
      *
-     * @param e
-     * @param request
-     * @return
+     * @param e       the exception thrown when the resource is not found
+     * @param request the current web request
+     * @return errorResponse containing status 404 and not-found error details
      */
     @ExceptionHandler(ResourceNotFoundException.class)
     @ApiResponses(value = {
@@ -148,11 +146,11 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Handle exception when the data is conflicted
+     * Handle exception when the input data is conflicted or invalid
      *
-     * @param e
-     * @param request
-     * @return
+     * @param e       the exception thrown when data conflict is detected
+     * @param request the current web request
+     * @return errorResponse containing status 409 and conflict error details
      */
     @ExceptionHandler(InvalidDataException.class)
     @ApiResponses(value = {
@@ -184,11 +182,11 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Handle exception when internal server error
+     * Handle exception when internal server error occurs
      *
-     * @param e
-     * @param request
-     * @return error
+     * @param e       the exception thrown during server-side processing
+     * @param request the current web request
+     * @return errorResponse containing status 500 and internal server error details
      */
     @ExceptionHandler(Exception.class)
     @ApiResponses(value = {
@@ -219,13 +217,4 @@ public class GlobalExceptionHandler {
         return errorResponse;
     }
 
-    @Getter
-    @Setter
-    private static class ErrorResponse {
-        private Date timestamp;
-        private int status;
-        private String path;
-        private String error;
-        private String message;
-    }
 }

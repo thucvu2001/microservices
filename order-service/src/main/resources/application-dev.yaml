@@ -20,6 +20,9 @@ api:
     paymentUrl: http://localhost:8086
     saleOrderUrl: http://localhost:8087/sale-order
 
+stripe:
+  publishable-key: ${STRIPE_PUBLISHABLE_KEY:pk_test_51TJExhBeYZyaJ1oY5UuY4UpAhIBcdnysQGblVG7cjErPCH71nQ4sElBaNehePkzDGSsLITQITkJczluzP33JNHDv00kketjpzN}
+
 openapi:
   service:
     api-docs: order-service
