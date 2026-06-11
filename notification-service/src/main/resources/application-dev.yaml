@@ -1,0 +1,21 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  devtools:
+    add-properties: true
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVER:localhost:29092}
+    order-success: order-success-topic
+
+onesignal:
+  api-url: ${ONESIGNAL_API_URL:https://onesignal.com/api/v1/notifications}
+  app-id: ${ONESIGNAL_APP_ID:3jful3ihee6luwgmthhze5m5r}
+  rest-api-key: ${ONESIGNAL_REST_API_KEY:os_v2_org_pcxr4kjgmvajxhwhjblglnv4fa3jful3ihee6luwgmthhze5m5rq7xzgdyiqfdmbg567tybam2husswjs2l2ehmlqsncjf2z2xpbbyi}
+
+openapi:
+  service:
+    api-docs: notification-service
+    server: http://localhost:${server.port}
+    title: Notification service
+    version: 1.0.0

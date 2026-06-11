@@ -24,6 +24,9 @@ public class SubscribeKafkaMessage {
     @Value("${spring.kafka.update-inventory}")
     private String updateInventoryTopic;
 
+    @Value("${spring.kafka.order-success}")
+    private String orderSuccessTopic;
+
     /**
      * Listen event from payment success
      */
@@ -41,7 +44,9 @@ public class SubscribeKafkaMessage {
         kafkaTemplate.send(updateInventoryTopic, new ObjectMapper().writeValueAsString(order));
         log.info("Send order to inventory-service successfully");
 
-        // TODO: Push notification to customer
+        // Push notification to customer
+        kafkaTemplate.send(orderSuccessTopic, order.getCustomerId().toString());
+        log.info("Send order id to notification-service successfully");
 
         // TODO: Send invoice to email of customer
     }

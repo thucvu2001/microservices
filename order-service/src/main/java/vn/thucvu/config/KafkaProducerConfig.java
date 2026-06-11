@@ -24,6 +24,12 @@ public class KafkaProducerConfig {
     @Value("${spring.kafka.checkout-order}")
     private String checkoutOrderTopic;
 
+    @Value("${spring.kafka.order-success}")
+    private String orderSuccessTopic;
+
+    @Value("${spring.kafka.update-inventory}")
+    private String updateInventoryTopic;
+
     @Value("${spring.profiles.active}")
     private String profile;
 
@@ -54,5 +60,15 @@ public class KafkaProducerConfig {
     @Bean
     public NewTopic checkoutOrderTopic() {
         return new NewTopic(checkoutOrderTopic, 3, (short) 1);
+    }
+
+    @Bean
+    public NewTopic orderSuccessTopic() {
+        return new NewTopic(orderSuccessTopic, 3, (short) 1);
+    }
+
+    @Bean
+    public NewTopic updateInventoryTopic() {
+        return new NewTopic(updateInventoryTopic, 3, (short) 1);
     }
 }
