@@ -1,0 +1,23 @@
+server:
+  port: 8089
+
+spring:
+  application:
+    name: job-scheduling
+  profiles:
+    active: @spring.profiles.active@
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+logging:
+  level:
+    root: INFO
+    web: INFO
+    org:
+      springframework:
+        batch: DEBUG
+        jdbc: DEBUG
