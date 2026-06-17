@@ -1,0 +1,557 @@
+{
+  "info": {
+    "_postman_id": "8c4125b2-3e28-4e89-bdc9-2ef44fbefcda",
+    "name": "Microservices API Gateway Testing",
+    "description": "Collection for testing microservices through the API Gateway (port 4953). Include variables to easily switch between gateway and direct microservice calls.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication Service",
+      "item": [
+        {
+          "name": "Hello",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/auth/hello",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "auth",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Account Service",
+      "item": [
+        {
+          "name": "Get Users List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/account/user/list?keyword=&sort=&page=0&size=20",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "account",
+                "user",
+                "list"
+              ],
+              "query": [
+                {
+                  "key": "keyword",
+                  "value": ""
+                },
+                {
+                  "key": "sort",
+                  "value": ""
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Thuc\",\n  \"lastName\": \"Vu\",\n  \"gender\": \"MALE\",\n  \"birthday\": \"2001-01-01T00:00:00.000+00:00\",\n  \"username\": \"thucvu\",\n  \"password\": \"password123\",\n  \"email\": \"thucvu@email.com\",\n  \"phone\": \"0987654321\",\n  \"type\": \"USER\",\n  \"addresses\": []\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/account/user/add",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "account",
+                "user",
+                "add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/account/user/id/1",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "account",
+                "user",
+                "id",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/account/user/1",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "account",
+                "user",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Product Service",
+      "item": [
+        {
+          "name": "Get Products List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/product/list?name=",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "product",
+                "list"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/product/1",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "product",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Bàn phím cơ\",\n  \"description\": \"Bàn phím cơ custom 75%\",\n  \"price\": 1500000.0,\n  \"userId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/product/add",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "product",
+                "add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/product/1",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "product",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Order Service",
+      "item": [
+        {
+          "name": "Place Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": 1,\n  \"amount\": 1500000,\n  \"currency\": \"VND\",\n  \"paymentMethod\": \"CARD\",\n  \"orderItems\": [\n    {\n      \"productId\": 1,\n      \"productName\": \"Bàn phím cơ\",\n      \"quantity\": 1,\n      \"price\": 1500000,\n      \"unit\": \"cái\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/order/add",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "order",
+                "add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Orders List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/order/list?status=&sort=&page=0&size=20",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "order",
+                "list"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": ""
+                },
+                {
+                  "key": "sort",
+                  "value": ""
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Order Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/order/replace-with-order-id",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "order",
+                "replace-with-order-id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Checkout Order",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/order/checkout/replace-with-order-id",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "order",
+                "checkout",
+                "replace-with-order-id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Order",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/order/cancel/replace-with-order-id",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "order",
+                "cancel",
+                "replace-with-order-id"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Payment Service",
+      "item": [
+        {
+          "name": "Create Payment Intent",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": 1,\n  \"orderId\": \"order_test_123\",\n  \"paymentMethod\": \"CARD\",\n  \"amount\": 1500000,\n  \"currency\": \"VND\",\n  \"description\": \"Thanh toán mua hàng\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/payment/create-payment-intent",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "payment",
+                "create-payment-intent"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transactions List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/payment/transaction/list?search=&sort=&page=0&size=20",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "payment",
+                "transaction",
+                "list"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "sort",
+                  "value": ""
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transaction Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/payment/transaction/1",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "payment",
+                "transaction",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notification Service",
+      "item": [
+        {
+          "name": "Send Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"playerIds\": [\n    \"device_token_12345\"\n  ],\n  \"message\": \"Đơn hàng của bạn đang được giao!\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/notification/send",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "notification",
+                "send"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Mail Service",
+      "item": [
+        {
+          "name": "Send Email",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/mail/send?toEmail=thucvu@email.com&subject=Hello&body=Thử nghiệm gửi email",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "mail",
+                "send"
+              ],
+              "query": [
+                {
+                  "key": "toEmail",
+                  "value": "thucvu@email.com"
+                },
+                {
+                  "key": "subject",
+                  "value": "Hello"
+                },
+                {
+                  "key": "body",
+                  "value": "Thử nghiệm gửi email"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Authorization Service",
+      "item": [
+        {
+          "name": "Get Roles by Username",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/author/roles?username=sysadmin",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "author",
+                "roles"
+              ],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "sysadmin"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "key": "gateway_url",
+      "value": "http://localhost:4953",
+      "type": "string"
+    }
+  ]
+}

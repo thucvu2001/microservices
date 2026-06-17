@@ -3,17 +3,17 @@ package vn.thucvu;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.TimeZone;
 
 @SpringBootApplication
-@EnableScheduling
 @Slf4j
-public class BatchJobApplication {
+public class AuthorizationApplication {
+
     public static void main(String[] args) {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         log.info("Default Timezone: {}", TimeZone.getDefault().getID());
-        SpringApplication.run(BatchJobApplication.class, args);
+        SpringApplication.run(AuthorizationApplication.class, args);
     }
+
 }

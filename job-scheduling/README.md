@@ -33,7 +33,7 @@ Dùng để thực hiện với các mục đích đơn giản như: thăm dò �
 
 - Enable Scheduling
 ```java
-package vn.tayjava;
+package vn.thucvu;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -50,7 +50,7 @@ public class BatchJobApplication {
 
 - Create Task
 ```java
-package vn.tayjava.tasks;
+package vn.thucvu.tasks;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +94,7 @@ Dùng để thực hiện với các mục đích phức tạp hơn như: lập 
 
 - Define a Quartz Job
 ```java
-package vn.tayjava.job;
+package vn.thucvu.job;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -120,7 +120,7 @@ public class QuartzJob implements Job {
 
 - Quartz Config
 ```java
-package vn.tayjava.job;
+package vn.thucvu.job;
 
 import org.quartz.*;
 import org.springframework.context.annotation.Bean;
@@ -234,7 +234,7 @@ public class Customer {
 - Create listener `JobCompletionNotificationListener`
 
 ```java
-package vn.tayjava.batch;
+package vn.thucvu.batch;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -245,7 +245,7 @@ import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import vn.tayjava.batch.Customer;
+import vn.thucvu.batch.Customer;
 
 @Component
 public class JobCompletionNotificationListener implements JobExecutionListener {
@@ -274,18 +274,18 @@ public class JobCompletionNotificationListener implements JobExecutionListener {
 - Create process `CustomerItemProcessor`
 
 ```java
-package vn.tayjava.batch;
+package vn.thucvu.batch;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
-public class CustomerItemProcessor implements ItemProcessor<vn.tayjava.batch.Customer, vn.tayjava.batch.Customer> {
+public class CustomerItemProcessor implements ItemProcessor<vn.thucvu.batch.Customer, vn.thucvu.batch.Customer> {
 
     private static final Logger log = LoggerFactory.getLogger(CustomerItemProcessor.class);
 
     @Override
-    public vn.tayjava.batch.Customer process(final vn.tayjava.batch.Customer customer) {
+    public vn.thucvu.batch.Customer process(final vn.thucvu.batch.Customer customer) {
         final String firstName = customer.getFirstName().toUpperCase();
         final String lastName = customer.getFirstName().toUpperCase();
 
@@ -301,7 +301,7 @@ public class CustomerItemProcessor implements ItemProcessor<vn.tayjava.batch.Cus
 
 - Config batch `BatchConfiguration`
 ```java
-package vn.tayjava.batch;
+package vn.thucvu.batch;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

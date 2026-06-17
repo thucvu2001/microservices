@@ -17,7 +17,6 @@ import java.awt.image.BufferedImage;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
-@RequestMapping("/order")
 @Slf4j(topic = "ORDER-CONTROLLER")
 public record OrderController(OrderService orderService) {
 

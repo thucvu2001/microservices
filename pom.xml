@@ -27,6 +27,7 @@
         <module>inventory-service</module>
         <module>notification-service</module>
         <module>job-scheduling</module>
+        <module>authorization-service</module>
     </modules>
 
     <properties>

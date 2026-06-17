@@ -25,40 +25,62 @@ spring:
             - Path=/auth/**, /v3/api-docs/authentication-service
           filters:
             - RewritePath=/auth/(?<segment>.*), /$\{segment} # thay thế ký tự /auth/ thành /
-            - RequestLoggingFilter
         - id: account-service
           uri: http://localhost:8082
           predicates:
             - Path=/account/**, /v3/api-docs/account-service
           filters:
             - RewritePath=/account/(?<segment>.*), /$\{segment} # thay thế ký tự /account/ thành /
-            - RequestLoggingFilter
+            - CustomizeFilter
         - id: mail-service
           uri: http://localhost:8083
           predicates:
             - Path=/mail/**, /v3/api-docs/mail-service
           filters:
             - RewritePath=/mail/(?<segment>.*), /$\{segment} # thay thế ký tự /mail/ thành /
-            - RequestLoggingFilter
+            - CustomizeFilter
         - id: product-service
           uri: http://localhost:8084
           predicates:
             - Path=/product/**, /v3/api-docs/product-service
           filters:
             - RewritePath=/product/(?<segment>.*), /$\{segment} # thay thế ký tự /product/ thành /
-            - RequestLoggingFilter
+            - CustomizeFilter
         - id: order-service
-          uri: http://localhost:8086
+          uri: http://localhost:8085
           predicates:
             - Path=/order/**, /v3/api-docs/order-service
           filters:
             - RewritePath=/order/(?<segment>.*), /$\{segment} # thay thế ký tự /order/ thành /
+            - CustomizeFilter
         - id: payment-service
           uri: http://localhost:8086
           predicates:
             - Path=/payment/**, /v3/api-docs/payment-service
           filters:
             - RewritePath=/payment/(?<segment>.*), /$\{segment} # thay thế ký tự /payment/ thành /
+            - CustomizeFilter
+        - id: inventory-service
+          uri: http://localhost:8087
+          predicates:
+            - Path=/inventory/**, /v3/api-docs/inventory-service
+          filters:
+            - RewritePath=/inventory/(?<segment>.*), /inventory/$\{segment}
+            - CustomizeFilter
+        - id: notification-service
+          uri: http://localhost:8088
+          predicates:
+            - Path=/notification/**, /v3/api-docs/notification-service
+          filters:
+            - RewritePath=/notification/(?<segment>.*), /$\{segment} # thay thế ký tự /notification/ thành /
+            - CustomizeFilter
+        - id: author-service
+          uri: http://localhost:8090
+          predicates:
+            - Path=/author/**, /v3/api-docs/author-service
+          filters:
+            - RewritePath=/author/(?<segment>.*), /$\{segment}
+            - CustomizeFilter
 springdoc:
   api-docs:
     enabled: true
@@ -73,6 +95,18 @@ springdoc:
         name: Authentication Service
       - url: /v3/api-docs/account-service
         name: Account Service
+      - url: /v3/api-docs/mail-service
+        name: Mail Service
+      - url: /v3/api-docs/product-service
+        name: Product Service
+      - url: /v3/api-docs/order-service
+        name: Order Service
+      - url: /v3/api-docs/payment-service
+        name: Payment Service
+      - url: /v3/api-docs/notification-service
+        name: Notification Service
+      - url: /v3/api-docs/author-service
+        name: Authorization Service
 
 openapi:
   service:
@@ -80,3 +114,7 @@ openapi:
     server: http://localhost:${server.port}
     title: Api Gateway
     version: 1.0.0
+
+service:
+  authUrl: http://localhost:8081
+  authorUrl: http://localhost:8090
