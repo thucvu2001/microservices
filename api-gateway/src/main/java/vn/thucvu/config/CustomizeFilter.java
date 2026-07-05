@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import reactor.core.publisher.Mono;
+import vn.thucvu.model.PermissionHash;
+import vn.thucvu.repository.PermissionRepository;
 import vn.thucvu.request.CheckPermissionRequest;
 import vn.thucvu.response.CheckPermissionResponse;
 import vn.thucvu.response.ErrorResponse;
@@ -25,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -35,15 +38,17 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 public class CustomizeFilter extends AbstractGatewayFilterFactory<CustomizeFilter.Config> {
 
     private final RestTemplate restTemplate;
+    private final PermissionRepository permissionRepository;
 
     @Value("${service.authUrl}")
     private String authUrl;
     @Value("${service.authorUrl}")
     private String authorUrl;
 
-    public CustomizeFilter(RestTemplate restTemplate) {
+    public CustomizeFilter(RestTemplate restTemplate, PermissionRepository permissionRepository) {
         super(Config.class);
         this.restTemplate = restTemplate;
+        this.permissionRepository = permissionRepository;
     }
 
     @Override
@@ -84,6 +89,11 @@ public class CustomizeFilter extends AbstractGatewayFilterFactory<CustomizeFilte
                     return printErrorMessage(exchange.getResponse(), FORBIDDEN, url, checkPermissionResponse.getMessage());
                 }
 
+                boolean isGranted = checkRoleInCache(verifyTokenResponse.getUsername());
+                if (!isGranted) {
+                    return printErrorMessage(exchange.getResponse(), FORBIDDEN, url, "Access denied");
+                }
+
                 log.info("Request valid");
                 return chain.filter(exchange).then(Mono.fromRunnable(() -> {
                 }));
@@ -92,6 +102,21 @@ public class CustomizeFilter extends AbstractGatewayFilterFactory<CustomizeFilte
                 return printErrorMessage(exchange.getResponse(), UNAUTHORIZED, url, "Request invalid, Please try again!");
             }
         };
+    }
+
+    /**
+     * Check permission in Redis
+     *
+     * @param username
+     * @return
+     */
+    private boolean checkRoleInCache(String username) {
+        Optional<PermissionHash> data = permissionRepository.findById(username);
+        if (data.isPresent()) {
+            // to do something
+            return true;
+        }
+        return false;
     }
 
     /**

@@ -4,12 +4,19 @@ spring:
       on-profile: dev
   devtools:
     add-properties: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
   cloud:
     gateway:
       globalcors:
         corsConfigurations:
           '[/**]':
-            allowedOrigins: "http://localhost:5173"
+            allowedOrigins:
+              - "http://localhost:5173"
+              - "http://localhost:3000"
+              - "http://localhost:3001"
             allowedHeaders: "*"
             allowedMethods:
               - GET
@@ -116,5 +123,5 @@ openapi:
     version: 1.0.0
 
 service:
-  authUrl: http://localhost:8081
-  authorUrl: http://localhost:8090
+  authUrl: ${SERVICE_AUTH_URL:http://localhost:8081/auth}
+  authorUrl: ${SERVICE_AUTHOR_URL:http://localhost:8090}

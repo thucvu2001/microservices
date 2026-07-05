@@ -6,9 +6,9 @@
 /_____/\__,_/\__/\___/_/ /_/            \____/\____/_.___/ 
 ```
 ## Prerequisite
-- Cài đặt JDK 17+ nếu chưa thì [cài đặt JDK](https://tayjava.vn/cai-dat-jdk-tren-macos-window-linux-ubuntu/)
-- Install Maven 3.5+ nếu chưa thì [cài đặt Maven](https://tayjava.vn/cai-dat-maven-tren-macos-window-linux-ubuntu/)
-- Install IntelliJ nếu chưa thì [cài đặt IntelliJ](https://tayjava.vn/cai-dat-intellij-tren-macos-va-window/)
+- Cài đặt JDK 17+ nếu chưa thì [cài đặt JDK](https://thucvu.vn/cai-dat-jdk-tren-macos-window-linux-ubuntu/)
+- Install Maven 3.5+ nếu chưa thì [cài đặt Maven](https://thucvu.vn/cai-dat-maven-tren-macos-window-linux-ubuntu/)
+- Install IntelliJ nếu chưa thì [cài đặt IntelliJ](https://thucvu.vn/cai-dat-intellij-tren-macos-va-window/)
 
 ## Technical Stacks
 - Java 17
@@ -25,8 +25,8 @@
 - Prometheus
 
 ## How to build Job Scheduling
-- [Cron Job là gì? Cấu Trúc Cron Job](https://tayjava.vn/cron-job-la-gi-cau-truc-cron-job)
-- [Spring Batch là gì? Batch Job với Spring Boot](https://tayjava.vn/spring-batch-la-gi-batch-job-voi-spring-boot)
+- [Cron Job là gì? Cấu Trúc Cron Job](https://thucvu.vn/cron-job-la-gi-cau-truc-cron-job)
+- [Spring Batch là gì? Batch Job với Spring Boot](https://thucvu.vn/spring-batch-la-gi-batch-job-voi-spring-boot)
 
 ### 1. Using @Scheduled
 Dùng để thực hiện với các mục đích đơn giản như: thăm dò định kỳ, làm mới bộ đệm hoặc các tác vụ nhẹ.
