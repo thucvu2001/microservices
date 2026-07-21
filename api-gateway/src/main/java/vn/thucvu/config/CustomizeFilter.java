@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import reactor.core.publisher.Mono;
+import vn.thucvu.grpc.VerifyTokenGrpcResponse;
 import vn.thucvu.model.PermissionHash;
 import vn.thucvu.repository.PermissionRepository;
 import vn.thucvu.request.CheckPermissionRequest;
@@ -22,6 +23,7 @@ import vn.thucvu.response.CheckPermissionResponse;
 import vn.thucvu.response.ErrorResponse;
 import vn.thucvu.response.PermissionResponse;
 import vn.thucvu.response.VerifyTokenResponse;
+import vn.thucvu.service.VerifyTokenService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -39,16 +41,18 @@ public class CustomizeFilter extends AbstractGatewayFilterFactory<CustomizeFilte
 
     private final RestTemplate restTemplate;
     private final PermissionRepository permissionRepository;
+    private final VerifyTokenService verifyTokenService;
 
     @Value("${service.authUrl}")
     private String authUrl;
     @Value("${service.authorUrl}")
     private String authorUrl;
 
-    public CustomizeFilter(RestTemplate restTemplate, PermissionRepository permissionRepository) {
+    public CustomizeFilter(RestTemplate restTemplate, PermissionRepository permissionRepository, VerifyTokenService verifyTokenService) {
         super(Config.class);
         this.restTemplate = restTemplate;
         this.permissionRepository = permissionRepository;
+        this.verifyTokenService = verifyTokenService;
     }
 
     @Override
@@ -71,8 +75,9 @@ public class CustomizeFilter extends AbstractGatewayFilterFactory<CustomizeFilte
                 final String token = request.getHeaders().getOrEmpty(AUTHORIZATION).get(0).substring(7);
 
                 // verify access token
-                VerifyTokenResponse verifyTokenResponse = verifyAccessToken(token);
-                if (!verifyTokenResponse.isValid()) {
+//                VerifyTokenResponse verifyTokenResponse = verifyAccessToken(token);
+                VerifyTokenGrpcResponse verifyTokenResponse = verifyTokenService.verifyAccessToken(token);
+                if (!verifyTokenResponse.getIsValid()) {
                     return printErrorMessage(exchange.getResponse(), FORBIDDEN, url, verifyTokenResponse.getMessage());
                 }
 

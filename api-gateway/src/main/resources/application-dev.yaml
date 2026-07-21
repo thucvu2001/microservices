@@ -125,3 +125,11 @@ openapi:
 service:
   authUrl: ${SERVICE_AUTH_URL:http://localhost:8081/auth}
   authorUrl: ${SERVICE_AUTHOR_URL:http://localhost:8090}
+
+grpc:
+  client:
+    verify-token-service:
+      address: static://localhost:9091
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
