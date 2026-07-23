@@ -17,7 +17,8 @@ spring:
               - "http://localhost:5173"
               - "http://localhost:3000"
               - "http://localhost:3001"
-            allowedHeaders: "*"
+            allowedHeaders:
+              - "*"
             allowedMethods:
               - GET
               - POST
@@ -25,47 +26,65 @@ spring:
               - PATCH
               - DELETE
               - OPTIONS
-      routes: # điều hướng request đến service tương ứng thông qua chỉ định trên url
+      default-filters: # Retry policy
+        - name: Retry
+          args:
+            retries: 3
+            statuses: BAD_GATEWAY, GATEWAY_TIMEOUT, INTERNAL_SERVER_ERROR
+            methods: GET, POST
+            backoff:
+              firstBackoff: 2s
+              maxBackoff: 10s
+              factor: 2
+      routes:
         - id: authentication-service
           uri: http://localhost:8081
           predicates:
             - Path=/auth/**, /v3/api-docs/authentication-service
           filters:
-            - RewritePath=/auth/(?<segment>.*), /$\{segment} # thay thế ký tự /auth/ thành /
+            - CustomizeFilter
+            - name: CircuitBreaker
+              args:
+                name: authCircuitBreaker
+                fallbackUri: forward:/fallback/auth
         - id: account-service
           uri: http://localhost:8082
           predicates:
             - Path=/account/**, /v3/api-docs/account-service
           filters:
-            - RewritePath=/account/(?<segment>.*), /$\{segment} # thay thế ký tự /account/ thành /
+            - RewritePath=/account/(?<segment>.*), /$\{segment}
             - CustomizeFilter
+            - name: CircuitBreaker
+              args:
+                name: accountCircuitBreaker
+                fallbackUri: forward:/fallback/account
         - id: mail-service
           uri: http://localhost:8083
           predicates:
             - Path=/mail/**, /v3/api-docs/mail-service
           filters:
-            - RewritePath=/mail/(?<segment>.*), /$\{segment} # thay thế ký tự /mail/ thành /
+            - RewritePath=/mail/(?<segment>.*), /$\{segment}
             - CustomizeFilter
         - id: product-service
           uri: http://localhost:8084
           predicates:
             - Path=/product/**, /v3/api-docs/product-service
           filters:
-            - RewritePath=/product/(?<segment>.*), /$\{segment} # thay thế ký tự /product/ thành /
+            - RewritePath=/product/(?<segment>.*), /$\{segment}
             - CustomizeFilter
         - id: order-service
           uri: http://localhost:8085
           predicates:
             - Path=/order/**, /v3/api-docs/order-service
           filters:
-            - RewritePath=/order/(?<segment>.*), /$\{segment} # thay thế ký tự /order/ thành /
+            - RewritePath=/order/(?<segment>.*), /$\{segment}
             - CustomizeFilter
         - id: payment-service
           uri: http://localhost:8086
           predicates:
             - Path=/payment/**, /v3/api-docs/payment-service
           filters:
-            - RewritePath=/payment/(?<segment>.*), /$\{segment} # thay thế ký tự /payment/ thành /
+            - RewritePath=/payment/(?<segment>.*), /$\{segment}
             - CustomizeFilter
         - id: inventory-service
           uri: http://localhost:8087
@@ -79,7 +98,7 @@ spring:
           predicates:
             - Path=/notification/**, /v3/api-docs/notification-service
           filters:
-            - RewritePath=/notification/(?<segment>.*), /$\{segment} # thay thế ký tự /notification/ thành /
+            - RewritePath=/notification/(?<segment>.*), /$\{segment}
             - CustomizeFilter
         - id: author-service
           uri: http://localhost:8090

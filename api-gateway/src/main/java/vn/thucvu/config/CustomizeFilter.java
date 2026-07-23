@@ -26,10 +26,7 @@ import vn.thucvu.response.VerifyTokenResponse;
 import vn.thucvu.service.VerifyTokenService;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -70,31 +67,31 @@ public class CustomizeFilter extends AbstractGatewayFilterFactory<CustomizeFilte
             ServerHttpResponse response = exchange.getResponse();
             HttpHeaders requestHeaders = request.getHeaders();
 
-            if (requestHeaders.containsKey(AUTHORIZATION)) {
+            if (requestHeaders.containsKey(AUTHORIZATION) && Objects.requireNonNull(requestHeaders.getFirst(AUTHORIZATION)).startsWith("Bearer ")) {
                 // Get access token from header
                 final String token = request.getHeaders().getOrEmpty(AUTHORIZATION).get(0).substring(7);
 
                 // verify access token
 //                VerifyTokenResponse verifyTokenResponse = verifyAccessToken(token);
-                VerifyTokenGrpcResponse verifyTokenResponse = verifyTokenService.verifyAccessToken(token);
-                if (!verifyTokenResponse.getIsValid()) {
-                    return printErrorMessage(exchange.getResponse(), FORBIDDEN, url, verifyTokenResponse.getMessage());
+                VerifyTokenGrpcResponse grpcResponse = verifyTokenService.verifyAccessToken(token);
+                if (!grpcResponse.getIsValid()) {
+                    return printErrorMessage(exchange.getResponse(), HttpStatus.valueOf(grpcResponse.getStatus()), url, grpcResponse.getMessage());
                 }
 
                 // authorization
                 // Option 1: check role
-                 getRoleByUsername(verifyTokenResponse.getUsername());
+                 getRoleByUsername(grpcResponse.getUsername());
 
                 // Option 2: check permission
-                 getPermissionByUsername(verifyTokenResponse.getUsername());
+                 getPermissionByUsername(grpcResponse.getUsername());
 
                 // Option 3: check permission
-                CheckPermissionResponse checkPermissionResponse = checkPermissionByUsernameAndRequestPath(verifyTokenResponse.getUsername(), request.getMethod().name(), url);
+                CheckPermissionResponse checkPermissionResponse = checkPermissionByUsernameAndRequestPath(grpcResponse.getUsername(), request.getMethod().name(), url);
                 if (200 != checkPermissionResponse.getStatus()) {
                     return printErrorMessage(exchange.getResponse(), FORBIDDEN, url, checkPermissionResponse.getMessage());
                 }
 
-                boolean isGranted = checkRoleInCache(verifyTokenResponse.getUsername());
+                boolean isGranted = checkRoleInCache(grpcResponse.getUsername());
                 if (!isGranted) {
                     return printErrorMessage(exchange.getResponse(), FORBIDDEN, url, "Access denied");
                 }

@@ -38,6 +38,7 @@
         <lombok.version>1.18.36</lombok.version>
         <protoc.version>3.21.12</protoc.version>
         <grpc.version>1.68.0</grpc.version>
+        <resilience4j.version>2.0.2</resilience4j.version>
     </properties>
 
     <profiles>
