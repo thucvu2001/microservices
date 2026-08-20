@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,6 +25,16 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestControllerAdvice
 public class GlobalException {
+
+    @Autowired(required = false)
+    private io.micrometer.tracing.Tracer tracer;
+
+    private String getTraceId() {
+        if (tracer != null && tracer.currentSpan() != null) {
+            return tracer.currentSpan().context().traceId();
+        }
+        return org.slf4j.MDC.get("traceId");
+    }
 
     /**
      * Handle exception when validate data
@@ -56,6 +67,7 @@ public class GlobalException {
         errorResponse.setTimestamp(new Date());
         errorResponse.setStatus(BAD_REQUEST.value());
         errorResponse.setPath(request.getDescription(false).replace("uri=", ""));
+        errorResponse.setTraceId(getTraceId());
 
         String message = e.getMessage();
         if (e instanceof MethodArgumentNotValidException) {
@@ -110,6 +122,7 @@ public class GlobalException {
         errorResponse.setStatus(UNAUTHORIZED.value());
         errorResponse.setError(UNAUTHORIZED.getReasonPhrase());
         errorResponse.setMessage("Username or password is incorrect");
+        errorResponse.setTraceId(getTraceId());
 
         return errorResponse;
     }
@@ -146,6 +159,7 @@ public class GlobalException {
         errorResponse.setStatus(FORBIDDEN.value());
         errorResponse.setError(FORBIDDEN.getReasonPhrase());
         errorResponse.setMessage(e.getMessage());
+        errorResponse.setTraceId(getTraceId());
 
         return errorResponse;
     }
@@ -182,6 +196,7 @@ public class GlobalException {
         errorResponse.setStatus(INTERNAL_SERVER_ERROR.value());
         errorResponse.setError(INTERNAL_SERVER_ERROR.getReasonPhrase());
         errorResponse.setMessage(e.getMessage());
+        errorResponse.setTraceId(getTraceId());
 
         return errorResponse;
     }

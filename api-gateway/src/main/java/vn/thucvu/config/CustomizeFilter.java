@@ -1,6 +1,7 @@
 package vn.thucvu.config;
 
 import com.google.gson.Gson;
+import io.micrometer.tracing.Tracer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -39,17 +40,19 @@ public class CustomizeFilter extends AbstractGatewayFilterFactory<CustomizeFilte
     private final RestTemplate restTemplate;
     private final PermissionRepository permissionRepository;
     private final VerifyTokenService verifyTokenService;
+    private final Tracer tracer;
 
     @Value("${service.authUrl}")
     private String authUrl;
     @Value("${service.authorUrl}")
     private String authorUrl;
 
-    public CustomizeFilter(RestTemplate restTemplate, PermissionRepository permissionRepository, VerifyTokenService verifyTokenService) {
+    public CustomizeFilter(RestTemplate restTemplate, PermissionRepository permissionRepository, VerifyTokenService verifyTokenService, io.micrometer.tracing.Tracer tracer) {
         super(Config.class);
         this.restTemplate = restTemplate;
         this.permissionRepository = permissionRepository;
         this.verifyTokenService = verifyTokenService;
+        this.tracer = tracer;
     }
 
     @Override
@@ -230,12 +233,9 @@ public class CustomizeFilter extends AbstractGatewayFilterFactory<CustomizeFilte
      * @return
      */
     private boolean isWhiteListURL(String url) {
-        List<String> permitUrls = new LinkedList<>();
-        permitUrls.add("/access-token");
-        permitUrls.add("/refresh-token");
-        permitUrls.add("/verify-token");
-
-        return permitUrls.contains(url);
+        return url.contains("/access-token")
+                || url.contains("/refresh-token")
+                || url.contains("/verify-token");
     }
 
     /**
@@ -247,12 +247,30 @@ public class CustomizeFilter extends AbstractGatewayFilterFactory<CustomizeFilte
     private Mono<Void> printErrorMessage(ServerHttpResponse response, HttpStatus status, String url, String message) {
         log.info("Request valid, URL={}", url);
 
+        String traceId = null;
+        if (tracer != null && tracer.currentSpan() != null) {
+            traceId = Objects.requireNonNull(tracer.currentSpan()).context().traceId();
+        }
+        if (traceId == null) {
+            traceId = org.slf4j.MDC.get("traceId");
+        }
+        if (traceId == null && tracer != null) {
+            io.micrometer.tracing.Span span = tracer.nextSpan().start();
+            traceId = span.context().traceId();
+            span.end();
+        }
+
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setTimestamp(new Date());
         errorResponse.setPath(url);
         errorResponse.setStatus(status.value());
         errorResponse.setError(status.getReasonPhrase());
         errorResponse.setMessage(message);
+        errorResponse.setTraceId(traceId);
+
+        if (traceId != null) {
+            response.getHeaders().set("X-Trace-Id", traceId);
+        }
 
         byte[] bytes = new Gson().toJson(errorResponse).getBytes(StandardCharsets.UTF_8);
 

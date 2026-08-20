@@ -93,7 +93,7 @@ services:
     networks:
       - default
 
-  elastic-search:
+  elasticsearch:
     image: elasticsearch:7.14.1
     container_name: elasticsearch
     restart: always
@@ -102,6 +102,8 @@ services:
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
     networks:
       - default
 
@@ -113,6 +115,22 @@ services:
       - "5601:5601"
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    networks:
+      - default
+
+  logstash:
+    image: logstash:7.14.1
+    container_name: logstash
+    restart: always
+    ports:
+      - "5600:5600"
+      - "5044:5044"
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    depends_on:
+      - elasticsearch
     networks:
       - default
 
@@ -145,17 +163,28 @@ services:
     networks:
       - default
 
-#  api-gateway:
-#    container_name: api-gateway
-#    build:
-#      context: ./api-gateway
-#      dockerfile: Dockerfile
-#    ports:
-#      - "4953:4953"
-#    env_file:
-#      - host.local.env
-#    networks:
-#      - default
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: zipkin
+    restart: always
+    ports:
+      - "9411:9411"
+    networks:
+      - default
+
+  api-gateway:
+    container_name: api-gateway
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    environment:
+      - LOGSTASH_HOST=logstash:5600
+    ports:
+      - '4953:4953'
+    depends_on:
+      - logstash
+    networks:
+      - default
 
 #  authentication:
 #    container_name: auth-service
@@ -190,3 +219,4 @@ volumes:
   postgres:
   mongo:
   grafana:
+  es_data:
